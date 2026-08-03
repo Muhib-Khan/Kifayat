@@ -1,0 +1,50 @@
+name: Deploy Backend to Koyeb
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'kifayat-backend/**'
+      - '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to Koyeb
+        uses: koyeb/action-git-deploy@v1
+        with:
+          api_token: ${{ secrets.KOYEB_API_TOKEN }}
+          app-name: kifayat-backend
+          service-name: kifayat-backend
+          service-instance-type: nano
+          git-builder: docker
+          git-docker-dockerfile: Dockerfile
+          git-workdir: kifayat-backend
+          service-ports: "3001:http"
+          service-routes: "/:3001"
+          service-env: |
+            NODE_ENV=production
+            PORT=3001
+            JWT_EXPIRE=30d
+            SITE_NAME=Kifayat
+            SITE_URL=https://kifayat-backend-${{ secrets.KOYEB_ORG }}.koyeb.app
+            FRONTEND_URL=https://kifayat-frontend-${{ secrets.KOYEB_ORG }}.koyeb.app
+            CORS_ORIGINS=https://kifayat-frontend-${{ secrets.KOYEB_ORG }}.koyeb.app,https://kifayat.com
+            ADMIN_EMAILS=aaliyan12345ilf@gmail.com,muhibkhan.dev@gmail.com,asharkhanggc@gmail.com,muhibkhan2410@gmail.com
+            RESEND_FROM_EMAIL=noreply@kifayat.com
+            FIREBASE_PROJECT_ID=kifayat--auth-data
+            HHC_API_URL=https://member.hhcdropshipping.com/api
+            HHC_REFERER=https://member.hhcdropshipping.com/
+            HHC_ORIGIN=https://member.hhcdropshipping.com
+            EMAIL_USER=Aaliyan12345ilf@gmail.com
+            GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+          service-secrets: |
+            MONGODB_URI=${{ secrets.MONGODB_URI }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            EMAIL_PASS=${{ secrets.EMAIL_PASS }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            FIREBASE_SERVICE_ACCOUNT=${{ secrets.FIREBASE_SERVICE_ACCOUNT }}

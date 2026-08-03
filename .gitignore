@@ -1,0 +1,22 @@
+node_modules/
+.env
+.env.local
+
+# Local tool state (never commit)
+.local/
+
+# Secrets / credentials — keep these local only
+kifayat-backend/firebase-service-account.json
+*.service-account.json
+
+# Logs
+*.log
+
+# Build output
+kifayat-frontend/dist/
+
+# User uploads (ephemeral)
+kifayat-backend/uploads/
+
+# Koyeb / Docker
+koyeb.yml
