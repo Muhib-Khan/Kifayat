@@ -158,3 +158,68 @@ node scripts/benchmark_groq_pool.js          # AI pool benchmark
 ## License
 
 ISC — see `kifayat-backend/package.json`.
+
+---
+
+## Deployment
+
+### Backend — Render
+
+1. Create a **Web Service** on Render → connect `Muhib-Khan/Kifayat` → branch `main`
+2. Set **Root Directory** to `kifayat-backend`
+3. Choose **Docker** as the builder (uses `kifayat-backend/Dockerfile`)
+4. Port: `3001` | Health Check: `/api/health`
+5. Build Filter — **Include Paths**: `kifayat-backend/**`
+6. Add environment variables (see table below)
+7. Deploy!
+
+### Frontend — Vercel
+
+1. Create a **Static Site** on Vercel → connect `Muhib-Khan/Kifayat` → branch `main`
+2. **Root Directory**: `kifayat-frontend`
+3. **Framework Preset**: Vite (auto-detected)
+4. The `vercel.json` rewrites `/api`, `/socket.io`, `/uploads` to the backend URL
+5. Environment variables (see table below)
+6. Deploy!
+
+### Environment Variables
+
+**Backend (Render) — Secrets:**
+| Variable | Source |
+|---|---|
+| `MONGODB_URI` | `kifayat-backend/.env` |
+| `JWT_SECRET` | `kifayat-backend/.env` |
+| `FIREBASE_SERVICE_ACCOUNT` | Paste JSON from `firebase-service-account.json` |
+| `EMAIL_PASS` | `kifayat-backend/.env` |
+
+**Backend (Render) — Regular:**
+| Variable | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `PORT` | `3001` |
+| `JWT_EXPIRE` | `30d` |
+| `CORS_ORIGINS` | `https://<your-vercel-app>.vercel.app,https://kifayat.com` |
+| `FRONTEND_URL` | `https://<your-vercel-app>.vercel.app` |
+| `SITE_URL` | `https://<your-render-backend>.onrender.com` |
+| `SITE_NAME` | `Kifayat` |
+| `ADMIN_EMAILS` | *(from `.env`)* |
+| `EMAIL_USER` | *(from `.env`)* |
+| `RESEND_FROM_EMAIL` | `noreply@kifayat.com` |
+| `FIREBASE_PROJECT_ID` | `kifayat--auth-data` |
+| `HHC_API_URL` | `https://member.hhcdropshipping.com/api` |
+| `HHC_REFERER` | `https://member.hhcdropshipping.com/` |
+| `HHC_ORIGIN` | `https://member.hhcdropshipping.com` |
+| `RESEND_API_KEY` | *(from `.env` — optional)* |
+| `GROQ_API_KEY` | *(from `.env` — optional)* |
+
+**Frontend (Vercel) — Public:**
+| Variable | Value |
+|---|---|
+| `VITE_FIREBASE_API_KEY` | *(from `.env.local`)* |
+| `VITE_FIREBASE_AUTH_DOMAIN` | *(from `.env.local`)* |
+| `VITE_FIREBASE_PROJECT_ID` | *(from `.env.local`)* |
+| `VITE_FIREBASE_STORAGE_BUCKET` | *(from `.env.local`)* |
+| `VITE_FIREBASE_MESSAGING_SENDER_ID` | *(from `.env.local`)* |
+| `VITE_FIREBASE_APP_ID` | *(from `.env.local`)* |
+| `VITE_FIREBASE_MEASUREMENT_ID` | *(from `.env.local`)* |
+
