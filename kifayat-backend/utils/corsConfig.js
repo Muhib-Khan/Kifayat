@@ -17,7 +17,9 @@ const getAllowedOrigins = () => {
 
 const isOriginAllowed = (origin) => {
   if (!origin) return true; // non-browser clients (curl, health checks)
-  return getAllowedOrigins().includes(origin);
+  if (getAllowedOrigins().includes(origin)) return true;
+  // Kifayat's live domains (apex + www). Exact matches only — no wildcards.
+  return origin === "https://kifayat.co" || origin === "https://www.kifayat.co";
 };
 
 module.exports = { getAllowedOrigins, isOriginAllowed };
