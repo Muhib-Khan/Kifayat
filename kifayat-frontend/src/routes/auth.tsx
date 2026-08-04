@@ -170,12 +170,6 @@ function Field({
   );
 }
 
-const TRUST = [
-  { stat: "12k+", label: "monthly shoppers" },
-  { stat: "4.8",  label: "avg rating" },
-  { stat: "98%",  label: "on-time dispatch" },
-];
-
 const INTERVAL = 4500;
 
 function EditorialCarousel() {
@@ -260,15 +254,6 @@ function EditorialCarousel() {
         </div>
 
         <div className="space-y-6">
-          <div className="grid grid-cols-3 gap-px bg-bone/10 border border-bone/10">
-            {TRUST.map((t) => (
-              <div key={t.stat} className="bg-coal/60 backdrop-blur-sm px-5 py-4">
-                <p className="font-display italic text-2xl text-bone">{t.stat}</p>
-                <p className="eyebrow text-bone/40 mt-1">{t.label}</p>
-              </div>
-            ))}
-          </div>
-
           <div className="flex items-center gap-2">
             {SLIDES.map((_, i) => (
               <button
