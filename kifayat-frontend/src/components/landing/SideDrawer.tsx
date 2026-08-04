@@ -70,12 +70,6 @@ export function SideDrawer() {
             </ul>
           </nav>
 
-          <div className="px-6 lg:px-10 pb-12 pt-8 border-t border-bone/10">
-            <p className="eyebrow text-bone/40 mb-3">Visit</p>
-            <p className="text-bone/80 leading-relaxed text-sm">
-              Karachi · Pakistan-wide dispatch
-            </p>
-          </div>
         </motion.aside>
       )}
 
