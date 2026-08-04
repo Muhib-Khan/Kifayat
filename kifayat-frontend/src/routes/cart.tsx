@@ -8,6 +8,7 @@ import {
 import { useCart, cart, cartTotals, refreshCartPrices, validateCartStock } from "@/lib/cart-store";
 import type { CartItem, StockWarning } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-store";
+import { isFirstOrderFreeEligible } from "@/lib/first-order-free";
 import { unapplyVoucherFromProduct } from "@/lib/voucher.functions";
 
 export const Route = createFileRoute("/cart")({
@@ -18,7 +19,8 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const items = useCart();
   const { user } = useAuth();
-  const { subtotal, shipping, total, count } = cartTotals(items);
+  const freeDelivery = isFirstOrderFreeEligible(user?.totalOrdersCount);
+  const { subtotal, shipping, total, count } = cartTotals(items, freeDelivery);
   const [stockWarnings, setStockWarnings] = useState<StockWarning[]>([]);
   const [validating, setValidating] = useState(true);
 
@@ -206,7 +208,7 @@ function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <dt className="eyebrow text-muted-foreground">Shipping</dt>
-                    <dd className="font-mono">{shipping === 0 ? "Free" : `Rs ${shipping}`}</dd>
+                    <dd className="font-mono">{freeDelivery && subtotal < 2500 ? "Free · first order 🎉" : shipping === 0 ? "Free" : `Rs ${shipping}`}</dd>
                   </div>
                 </dl>
                 <div className="mt-6 pt-6 border-t border-coal/15 flex items-baseline justify-between">

@@ -20,6 +20,7 @@ export type AuthUser = {
   isVerifiedCustomer?: boolean;
   createdAt?: string;
   lastActiveAt?: string;
+  totalOrdersCount?: number;
 };
 
 type AuthState = {

@@ -3,6 +3,7 @@ import { PageShell } from "@/components/landing/PageShell";
 import { useState, useEffect, useRef } from "react";
 import { useCart, cart, cartTotals, refreshCartPrices, validateCartStock } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-store";
+import { isFirstOrderFreeEligible, markFirstOrderFreeUsed } from "@/lib/first-order-free";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import LocationPicker from "@/components/LocationPicker";
@@ -338,7 +339,8 @@ function Checkout() {
     };
   }, []);
 
-  const totals = cartTotals(items);
+  const freeDelivery = isFirstOrderFreeEligible(user?.totalOrdersCount);
+  const totals = cartTotals(items, freeDelivery);
   const set = (key: keyof ShipmentForm) => (v: string) =>
     setForm((f) => ({ ...f, [key]: v }));
 
@@ -414,6 +416,7 @@ function Checkout() {
 
       placedRef.current = true;
       cart.clear();
+      markFirstOrderFreeUsed();
       showConfirmed(data.order);
       toast.success("Order placed! Check your email to confirm.");
     } catch (e: any) {
@@ -425,6 +428,7 @@ function Checkout() {
         if (existing) {
           placedRef.current = true;
           cart.clear();
+          markFirstOrderFreeUsed();
           showConfirmed(existing);
           toast.success("Order placed! Check your email to confirm.");
           recovered = true;
@@ -653,6 +657,11 @@ function Checkout() {
 
                 {/* Totals */}
                 <div className="border-t border-bone/15 pt-4 space-y-2 text-sm">
+                  {freeDelivery && totals.subtotal < 2500 && (
+                    <div className="border border-brass/40 bg-brass/10 px-3 py-2.5 text-xs text-bone">
+                      🎉 Congratulations! Your first order ships <span className="font-semibold text-brass">FREE</span> — the Rs 200 delivery fee has been waived.
+                    </div>
+                  )}
                   <div className="flex justify-between text-bone/60">
                     <span>Subtotal</span>
                     <span>Rs {totals.subtotal.toLocaleString("en-PK")}</span>
@@ -660,9 +669,11 @@ function Checkout() {
                   <div className="flex justify-between text-bone/60">
                     <span>Shipping</span>
                     <span>
-                      {totals.shipping === 0
-                        ? "Free"
-                        : `Rs ${totals.shipping.toLocaleString("en-PK")}`}
+                      {freeDelivery && totals.subtotal < 2500
+                        ? "Free · first order 🎉"
+                        : totals.shipping === 0
+                          ? "Free"
+                          : `Rs ${totals.shipping.toLocaleString("en-PK")}`}
                     </span>
                   </div>
                   <div className="flex justify-between font-display font-bold text-base pt-2 border-t border-bone/15 mt-2">

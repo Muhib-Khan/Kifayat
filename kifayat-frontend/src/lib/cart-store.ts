@@ -217,9 +217,9 @@ export function useCart() {
   return s;
 }
 
-export function cartTotals(arr: CartItem[]) {
+export function cartTotals(arr: CartItem[], freeDelivery = false) {
   const subtotal = arr.reduce((s, i) => s + i.price * i.qty, 0);
-  const shipping = arr.length === 0 ? 0 : subtotal >= 2500 ? 0 : 200;
+  const shipping = arr.length === 0 ? 0 : freeDelivery || subtotal >= 2500 ? 0 : 200;
   const total = subtotal + shipping;
   const count = arr.reduce((s, i) => s + i.qty, 0);
   return { subtotal, shipping, total, count };
