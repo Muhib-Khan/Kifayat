@@ -4,6 +4,7 @@ import { Search as SearchIcon, Star, ArrowUpRight, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { searchProducts } from "@/lib/search.functions";
+import { ProductGridSkeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/seo/SEO";
 import { SearchResultsPageSchema } from "@/components/seo/JsonLd";
 import { SITE_URL } from "@/components/seo/SEO";
@@ -161,6 +162,8 @@ function SearchPage() {
             <SearchIcon className="size-12 mx-auto mb-4 opacity-20" strokeWidth={1} />
             <p className="text-lg font-medium">Type something to search</p>
           </div>
+        ) : isFetching && !data ? (
+          <ProductGridSkeleton count={12} columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-4" />
         ) : results.length === 0 && !isFetching ? (
           <div className="text-center py-24">
             <p className="text-lg font-semibold mb-2">No results for "{search.q}"</p>

@@ -45,6 +45,7 @@ export function Lookbook() {
         <div className="grid grid-cols-12 gap-4 lg:gap-6">
           {SCENES.map((s, i) => {
             const products = queries[i]?.data ?? [];
+            const loading  = queries[i]?.isLoading ?? false;
             const product = products.find((p: any) => p.image_url) ?? products[0] ?? null;
             const imgSrc  = product?.image_url ?? null;
             const slug    = product?.slug ?? product?.id ?? null;
@@ -69,6 +70,8 @@ export function Lookbook() {
                       decoding="async"
                       className="size-full object-cover img-breathe transition-transform duration-700 [@media(hover:hover)]:group-hover:scale-[1.04]"
                     />
+                  ) : loading ? (
+                    <div className="size-full animate-pulse bg-bone/60" />
                   ) : (
                     <div className="size-full flex items-center justify-center bg-gradient-to-br from-coal/5 to-coal/10">
                       <Package className="size-12 text-coal/20" strokeWidth={1} />

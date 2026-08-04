@@ -19,7 +19,7 @@ export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
 
-  const { data: heroProducts = [] } = useQuery({
+  const { data: heroProducts = [], isLoading } = useQuery({
     queryKey: ["hero", "products"],
     queryFn: () => listProducts({ limit: 2 }),
     staleTime: 60_000,
@@ -84,7 +84,7 @@ export function Hero() {
                 className="size-full object-contain will-change-transform"
               />
             ) : (
-              <div className="size-full bg-paper" />
+              <div className={`size-full ${isLoading ? "animate-pulse bg-bone/50" : "bg-paper"}`} />
             )}
             {/* label */}
             <span className="absolute top-5 left-5 eyebrow text-bone bg-coal/80 px-2.5 py-1 text-[10px]">
@@ -196,7 +196,7 @@ export function Hero() {
                   className="size-full object-contain"
                 />
               ) : (
-                <div className="size-full bg-paper" />
+                <div className={`size-full ${isLoading ? "animate-pulse bg-bone/50" : "bg-paper"}`} />
               )}
               <span className="absolute top-4 left-4 eyebrow text-bone bg-coal/80 px-2.5 py-1 text-[10px]">Autumn Edit</span>
             </motion.figure>
@@ -220,7 +220,7 @@ export function Hero() {
                 className="size-full object-contain will-change-transform"
               />
             ) : (
-              <div className="size-full bg-paper" />
+              <div className={`size-full ${isLoading ? "animate-pulse bg-bone/50" : "bg-paper"}`} />
             )}
             <span className="absolute top-5 right-5 eyebrow text-bone bg-coal/80 px-2.5 py-1 text-[10px]">
               {rightProduct ? `02 / ${rightProduct.name}` : "02 / Pairing"}

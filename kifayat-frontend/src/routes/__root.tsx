@@ -111,8 +111,30 @@ function Root() {
   );
 }
 
+function RoutePendingComponent() {
+  return (
+    <div className="min-h-screen bg-bone" aria-hidden>
+      <div className="max-w-[1600px] mx-auto px-5 lg:px-10 pt-10 lg:pt-16">
+        <div className="h-3 w-28 rounded animate-pulse bg-coal/10" />
+        <div className="h-10 w-72 max-w-full rounded animate-pulse bg-coal/10 mt-4" />
+        <div className="h-3 w-48 rounded animate-pulse bg-coal/10 mt-3" />
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-10 lg:gap-x-5 mt-10">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="space-y-3">
+              <div className="aspect-[3/4] rounded-xl animate-pulse bg-bone/60" />
+              <div className="h-3 rounded animate-pulse bg-coal/10 w-3/4" />
+              <div className="h-3 rounded animate-pulse bg-coal/10 w-1/2" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   component: Root,
+  pendingComponent: RoutePendingComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });

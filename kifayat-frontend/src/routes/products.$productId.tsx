@@ -201,7 +201,7 @@ function ProductPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
 
-  const { data: similar = [] } = useQuery({
+  const { data: similar = [], isLoading: similarLoading } = useQuery({
     queryKey: ["similar", product.id],
     queryFn: () => getSimilarProducts(product.id),
   });
@@ -898,7 +898,7 @@ function ProductPage() {
         </div>
 
         {/* ── You might also like ── */}
-        {similar.length > 0 && (
+        {(similar.length > 0 || similarLoading) && (
           <section className="mt-16 lg:mt-24">
             <div className="flex items-end justify-between mb-7">
               <div>
@@ -916,7 +916,15 @@ function ProductPage() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 sm:gap-6">
-              {similar.map((p) => (
+              {similarLoading && similar.length === 0
+                ? Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="space-y-3" aria-hidden>
+                      <div className="aspect-square rounded-xl animate-pulse bg-bone/60" />
+                      <div className="h-3 rounded animate-pulse bg-coal/10 w-3/4" />
+                      <div className="h-3 rounded animate-pulse bg-coal/10 w-1/2" />
+                    </div>
+                  ))
+                : similar.map((p) => (
                 <Link
                   key={p.id}
                   to="/products/$productId"
@@ -957,7 +965,7 @@ function ProductPage() {
                     )}
                   </div>
                 </Link>
-              ))}
+                ))}
             </div>
           </section>
         )}

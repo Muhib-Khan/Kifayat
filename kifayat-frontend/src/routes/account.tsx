@@ -45,8 +45,20 @@ function AccountLayout() {
   if (loading || !user) {
     return (
       <PageShell>
-        <section className="max-w-7xl mx-auto px-4 py-24 eyebrow text-muted-foreground">
-          {loading ? "Checking session…" : "Redirecting to sign in…"}
+        <section className="max-w-7xl mx-auto px-4 py-24" aria-hidden>
+          {loading ? (
+            <div className="space-y-8">
+              <div className="h-3 w-32 rounded animate-pulse bg-secondary" />
+              <div className="h-40 rounded-3xl animate-pulse bg-secondary border border-border" />
+              <div className="grid sm:grid-cols-3 gap-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="h-24 rounded-2xl animate-pulse bg-secondary border border-border" />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="eyebrow text-muted-foreground">Redirecting to sign in…</p>
+          )}
         </section>
       </PageShell>
     );

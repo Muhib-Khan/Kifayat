@@ -32,7 +32,7 @@ function Counter({ to, suffix, decimals = 0 }: { to: number; suffix: string; dec
 }
 
 export function LiveStats() {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["public-stats"],
     queryFn: listPublicStats,
     staleTime: 5 * 60 * 1000,
@@ -77,7 +77,15 @@ export function LiveStats() {
           </p>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-coal/10">
-          {stats.map((s, i) => (
+          {isLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-bone p-8 lg:p-10" aria-hidden>
+                <div className="h-8 w-24 rounded animate-pulse bg-coal/10" />
+                <div className="h-3 w-20 rounded animate-pulse bg-coal/10 mt-3" />
+              </div>
+            ))
+          ) : (
+            stats.map((s, i) => (
             <motion.div
               key={s.label}
               initial={{ opacity: 0, y: 24 }}
@@ -91,7 +99,8 @@ export function LiveStats() {
               </p>
               <p className="eyebrow text-coal/55 mt-4">{s.label}</p>
             </motion.div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </section>
