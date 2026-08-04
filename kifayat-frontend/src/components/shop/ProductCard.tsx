@@ -123,7 +123,7 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
             <div className="px-3.5 py-3 sm:px-5 sm:py-4 flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="eyebrow text-bone/50 mb-1">{p.brand}</p>
-                <p className="font-sans font-semibold text-xs sm:text-sm lg:text-base leading-snug">{title}</p>
+                <p className="font-sans font-semibold text-xs sm:text-sm lg:text-base leading-snug truncate">{title}</p>
               </div>
               <div className="text-right shrink-0">
                 <p className="font-display text-sm sm:text-lg lg:text-xl text-brass">Rs {p.price.toLocaleString()}</p>
@@ -145,7 +145,7 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
           <Link
             to="/products/$productId"
             params={{ productId: p.slug }}
-            className="block font-sans font-medium text-xs sm:text-sm lg:text-base leading-snug hover:text-brass transition-colors"
+            className="block font-sans font-medium text-xs sm:text-sm lg:text-base leading-snug truncate hover:text-brass transition-colors"
           >
             {title}
           </Link>
