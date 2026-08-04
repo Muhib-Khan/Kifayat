@@ -17,20 +17,8 @@ export type CardProduct = {
   inStock?: boolean;
 };
 
-/** Natural 3–5 word truncation: short words → more words shown, long words → fewer. */
-function smartTitle(name: string): string {
-  const words = name.trim().split(/\s+/);
-  if (words.length <= 3) return name;
-  let len = 0;
-  for (let i = 0; i < words.length && i < 5; i++) {
-    len += words[i].length;
-    if (i >= 2 && len >= 18) return words.slice(0, i + 1).join(" ");
-  }
-  return words.slice(0, 5).join(" ");
-}
-
 export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
-  const title = smartTitle(p.name);
+  const title = p.name;
   const wishKey = p.id || p.slug;
   const { user } = useAuth();
   const navigate = useNavigate();

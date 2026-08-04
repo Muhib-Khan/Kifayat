@@ -15,17 +15,6 @@ const WHY_KIFAYAT = [
   { icon: RotateCcw, title: "Easy Returns", text: "Changed your mind? 7-day returns, no questions asked." },
 ];
 
-function smartTitle(name: string): string {
-  const words = name.trim().split(/\s+/);
-  if (words.length <= 3) return name;
-  let len = 0;
-  for (let i = 0; i < words.length && i < 5; i++) {
-    len += words[i].length;
-    if (i >= 2 && len >= 18) return words.slice(0, i + 1).join(" ");
-  }
-  return words.slice(0, 5).join(" ");
-}
-
 const cardVariants: Variants = {
   hidden:  { opacity: 0, y: 28 },
   visible: (i: number) => ({
@@ -193,9 +182,9 @@ export function Products() {
                     <Link
                       to="/products/$productId"
                       params={{ productId: p.slug }}
-                      className="block font-sans font-bold text-sm lg:text-base leading-snug hover:text-brass transition-colors"
+                      className="block font-sans font-bold text-sm lg:text-base leading-snug truncate hover:text-brass transition-colors"
                     >
-                      {smartTitle(p.name)}
+                      {p.name}
                     </Link>
                   </div>
                   <div className="text-right shrink-0">
