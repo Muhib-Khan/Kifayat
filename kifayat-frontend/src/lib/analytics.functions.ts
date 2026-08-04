@@ -81,7 +81,7 @@ export async function fetchAnalytics(): Promise<AnalyticsData> {
   const [ordersRes, statsRes, leaderboardRes] = await Promise.all([
     api.get<{ orders: any[]; shippingMap: Record<string, any> }>("/orders"),
     api.get<{ stats: any }>("/products/stats"),
-    api.get<{ products: any[] }>("/products/leaderboard"),
+    api.get<{ products: any[] }>("/products/leaderboard?limit=200"),
   ]);
 
   const orders      = ordersRes.orders ?? [];

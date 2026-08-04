@@ -599,11 +599,14 @@ const getProducts = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const getLeaderboard = async (req, res) => {
   try {
-    const products = await Product.find({})
+    const limit = parseInt(req.query.limit, 10) || 0;
+    let q = Product.find({})
       .sort({ salesCount: -1, name: 1 })
       .select(
         "name category retailPrice stock originalStock salesCount imageUrl sku productId createdAt",
       );
+    if (limit > 0) q = q.limit(Math.min(limit, 5000));
+    const products = await q;
 
     return res.status(200).json({ success: true, products });
   } catch (err) {

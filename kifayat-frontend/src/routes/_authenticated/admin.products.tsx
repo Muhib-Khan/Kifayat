@@ -10,7 +10,6 @@ import {
   adminUpdatePricingByCategory,
   adminUpdateProduct,
   adminGetProductOrders,
-  adminGetLeaderboard,
   adminDownloadCSV,
   adminGetCSVQueueCount,
   adminToggleFeaturedOnLanding,
@@ -393,17 +392,6 @@ function AdminProducts() {
     return () => clearTimeout(t);
   }, [searchInput]);
 
-  const { data: leaderboardData } = useQuery({
-    queryKey: ["admin-leaderboard"],
-    queryFn: adminGetLeaderboard,
-  });
-
-  const salesMap: Record<string, number> = {};
-  (leaderboardData?.products ?? []).forEach((p: any) => {
-    salesMap[p._id] = p.salesCount ?? 0;
-  });
-
-  // Paginated products query — keeps previous page visible while next loads
   const { data: productsData, isLoading } = useQuery({
     queryKey: ["admin", "products", page, debouncedSearch],
     queryFn: () => adminListProductsPaginated({ page, limit: PAGE_SIZE, search: debouncedSearch }),
@@ -797,7 +785,7 @@ function AdminProducts() {
                 {products.map((p: any) => {
                   const pid = p._id ?? p.id;
                   const isHidden = p.hidden ?? false;
-                  const sales = salesMap[pid] ?? 0;
+                  const sales = p.salesCount ?? 0;
                   const inStock = p.inStock ?? (p.stock ?? 0) > 0;
                   return (
                     <tr key={pid} className={`hover:bg-secondary/40 transition-colors ${isHidden ? "opacity-50 grayscale" : ""}`}>
