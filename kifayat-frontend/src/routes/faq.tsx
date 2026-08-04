@@ -15,14 +15,14 @@ const groups = [
     items: [
       ["How do I place an order?", "Browse the catalogue, add items to your cart and proceed to checkout. You can pay with card, cash on delivery, Easypaisa or Jazzcash."],
       ["Can I order without an account?", "Yes — guest checkout is supported, but signing up lets you track orders and earn rewards."],
-      ["Do you ship outside Karachi?", "We're focused on Karachi for now. Nationwide shipping is coming soon."],
+      ["Do you deliver all across Pakistan?", "Yes — we deliver to every city and town across Pakistan. Dispatch is nationwide from our Karachi hub."],
     ],
   },
   {
     title: "Delivery",
     items: [
-      ["How long does delivery take?", "Most Karachi orders arrive within 2–4 business days. Express delivery is available the next day."],
-      ["Is delivery free?", "Delivery is free on orders above Rs 2,500. Otherwise a flat Rs 200 applies."],
+      ["How long does delivery take?", "Most orders arrive within 2–4 business days. Express delivery is available the next day."],
+      ["Is delivery free?", "Yes — your very first order ships free. After that, delivery is free on orders above Rs 2,500, otherwise a flat Rs 200 applies."],
       ["Can I track my order?", "Yes — every order gets a tracking page accessible from your account."],
     ],
   },

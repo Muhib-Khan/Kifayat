@@ -107,7 +107,7 @@ function CategoryPage() {
     name: p.name,
     url: `${SITE_URL}/products/${p.id}`,
   }));
-  const categoryDesc = `Shop ${categoryName} online in Pakistan at Kifayat. Quality ${categoryName.toLowerCase()} products with fast delivery across Karachi and free shipping on orders over Rs\u00a02,500.`;
+  const categoryDesc = `Shop ${categoryName} online in Pakistan at Kifayat. Quality ${categoryName.toLowerCase()} products with fast delivery all across Pakistan and free shipping on orders over Rs\u00a02,500.`;
 
   return (
     <PageShell>

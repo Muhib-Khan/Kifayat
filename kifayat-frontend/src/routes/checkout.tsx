@@ -657,9 +657,10 @@ function Checkout() {
 
                 {/* Totals */}
                 <div className="border-t border-bone/15 pt-4 space-y-2 text-sm">
-                  {freeDelivery && totals.subtotal < 2500 && (
+                  {freeDelivery && (
                     <div className="border border-brass/40 bg-brass/10 px-3 py-2.5 text-xs text-bone">
-                      🎉 Congratulations! Your first order ships <span className="font-semibold text-brass">FREE</span> — the Rs 200 delivery fee has been waived.
+                      🎉 Congratulations! Your first order ships <span className="font-semibold text-brass">FREE</span>
+                      {totals.subtotal < 2500 ? " — the Rs 200 delivery fee has been waived." : " — delivery is on us."}
                     </div>
                   )}
                   <div className="flex justify-between text-bone/60">
@@ -669,7 +670,7 @@ function Checkout() {
                   <div className="flex justify-between text-bone/60">
                     <span>Shipping</span>
                     <span>
-                      {freeDelivery && totals.subtotal < 2500
+                      {freeDelivery
                         ? "Free · first order 🎉"
                         : totals.shipping === 0
                           ? "Free"

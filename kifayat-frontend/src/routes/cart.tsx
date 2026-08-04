@@ -199,6 +199,17 @@ function CartPage() {
 
             {/* ── Order summary ── */}
             <aside className="lg:sticky lg:top-28 h-fit">
+              {freeDelivery && (
+                <div className="mb-4 border border-brass/40 bg-brass/5 p-4 flex items-start gap-3">
+                  <span className="text-lg leading-none">🎉</span>
+                  <div>
+                    <p className="eyebrow text-brass">First order · Free delivery</p>
+                    <p className="text-xs text-coal/70 mt-1 leading-relaxed">
+                      This is your first order — delivery is on us, no code needed. It applies automatically at checkout.
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className="border border-coal/15 p-6 sm:p-8 lg:p-10 bg-paper">
                 <div className="eyebrow text-muted-foreground mb-6">§ Summary</div>
                 <dl className="space-y-3 text-sm">
@@ -208,7 +219,7 @@ function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <dt className="eyebrow text-muted-foreground">Shipping</dt>
-                    <dd className="font-mono">{freeDelivery && subtotal < 2500 ? "Free · first order 🎉" : shipping === 0 ? "Free" : `Rs ${shipping}`}</dd>
+                    <dd className="font-mono">{freeDelivery ? "Free · first order 🎉" : shipping === 0 ? "Free" : `Rs ${shipping}`}</dd>
                   </div>
                 </dl>
                 <div className="mt-6 pt-6 border-t border-coal/15 flex items-baseline justify-between">

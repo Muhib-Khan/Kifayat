@@ -359,7 +359,7 @@ function ProductPage() {
     : product.name;
   const seoDesc = product.description
     ? product.description.slice(0, 155).replace(/\s+/g, " ").trim() + (product.description.length > 155 ? "…" : "")
-    : `Buy ${product.name} in Pakistan at Rs ${product.price.toLocaleString()}. Fast delivery across Karachi. ${product.brand ?? ""}`.trim();
+    : `Buy ${product.name} in Pakistan at Rs ${product.price.toLocaleString()}. Fast delivery all across Pakistan. ${product.brand ?? ""}`.trim();
 
   const crumbs = [
     { name: "Home", url: SITE_URL },
@@ -378,7 +378,7 @@ function ProductPage() {
         image={product.image_url ?? undefined}
         path={`/products/${product.slug || product.id}`}
         type="product"
-        keywords={[product.name, product.brand, product.category_name, "buy online Pakistan", "Karachi delivery"].filter(Boolean).join(", ")}
+        keywords={[product.name, product.brand, product.category_name, "buy online Pakistan", "nationwide delivery"].filter(Boolean).join(", ")}
         price={product.price}
         priceCurrency="PKR"
         availability={product.inStock ? "instock" : "oos"}

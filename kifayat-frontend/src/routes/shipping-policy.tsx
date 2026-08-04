@@ -47,6 +47,7 @@ function ShippingPolicyPage() {
         {
           heading: "Shipping Fees",
           body: [
+            "First order, every customer: FREE delivery — on us. No code needed, it applies automatically at checkout.",
             "Standard delivery Pakistan-wide: FREE on orders above Rs 2,500.",
             "Standard delivery below Rs 2,500: Rs 200 flat fee.",
             "Express next-day, Karachi only: Rs 350 flat fee, regardless of order value.",

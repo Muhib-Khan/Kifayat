@@ -7,6 +7,7 @@ import {
 import { uiStore } from "@/lib/ui-store";
 import { useAuth, signOut } from "@/lib/auth-store";
 import { useCart, cartTotals } from "@/lib/cart-store";
+import { isFirstOrderFreeEligible } from "@/lib/first-order-free";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { searchSuggest } from "@/lib/search.functions";
@@ -278,6 +279,8 @@ function CategoryStrip() {
 export function Header() {
   const items       = useCart();
   const { count }   = cartTotals(items);
+  const { user }    = useAuth();
+  const firstOrderFree = isFirstOrderFreeEligible(user?.totalOrdersCount);
 
   // ── Auto-hide on scroll down, reveal on scroll up ──────────────────────────
   const [hidden, setHidden]   = useState(false);
@@ -315,9 +318,13 @@ export function Header() {
       <div className="bg-coal text-bone">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-8 h-9 flex items-center justify-between eyebrow text-[11px]">
           <span className="hidden sm:inline opacity-75">
-            Pakistan-wide dispatch · Free delivery over Rs 2,500
+            {firstOrderFree
+              ? "🎉 Free delivery on your FIRST order — no code needed"
+              : "Pakistan-wide dispatch · Free delivery over Rs 2,500"}
           </span>
-          <span className="sm:hidden opacity-75">Free delivery over Rs 2,500</span>
+          <span className="sm:hidden opacity-75">
+            {firstOrderFree ? "🎉 First order ships FREE" : "Free delivery over Rs 2,500"}
+          </span>
           <div className="flex items-center gap-5 opacity-75">
             <span className="hidden sm:inline">COD available · PKR</span>
             <Link to="/contact" className="hover:opacity-100 transition hover:text-brass">

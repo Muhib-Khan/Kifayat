@@ -68,7 +68,7 @@ function SearchPage() {
     ? `"${search.q}" — Search Results`
     : "Search Products";
   const seoDesc = search.q
-    ? `Browse ${results.length > 0 ? results.length + "+" : ""} results for "${search.q}" at Kifayat. Shop quality products in Pakistan with fast Karachi delivery.`
+    ? `Browse ${results.length > 0 ? results.length + "+" : ""} results for "${search.q}" at Kifayat. Shop quality products in Pakistan with fast delivery all across Pakistan.`
     : "Search thousands of quality products at Kifayat — electronics, fashion, home goods and more with delivery across Pakistan.";
 
   return (
