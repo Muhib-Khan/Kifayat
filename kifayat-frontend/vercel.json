@@ -9,6 +9,10 @@
       "destination": "https://p01--kifayat-backend--62p9lfb7xpvc.code.run/socket.io/:path*"
     },
     {
+      "source": "/socket.io/",
+      "destination": "https://p01--kifayat-backend--62p9lfb7xpvc.code.run/socket.io/"
+    },
+    {
       "source": "/uploads/:path*",
       "destination": "https://p01--kifayat-backend--62p9lfb7xpvc.code.run/uploads/:path*"
     }
