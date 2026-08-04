@@ -2,15 +2,15 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://kifayat-backend.onrender.com/api/:path*"
+      "destination": "https://p01--kifayat-backend--62p9lfb7xpvc.code.run/api/:path*"
     },
     {
       "source": "/socket.io/:path*",
-      "destination": "https://kifayat-backend.onrender.com/socket.io/:path*"
+      "destination": "https://p01--kifayat-backend--62p9lfb7xpvc.code.run/socket.io/:path*"
     },
     {
       "source": "/uploads/:path*",
-      "destination": "https://kifayat-backend.onrender.com/uploads/:path*"
+      "destination": "https://p01--kifayat-backend--62p9lfb7xpvc.code.run/uploads/:path*"
     }
   ]
 }
