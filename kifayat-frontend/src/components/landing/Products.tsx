@@ -141,7 +141,7 @@ export function Products() {
                 className="group"
               >
                 <Link to="/products/$productId" params={{ productId: p.slug }} className="block" data-cursor="view">
-                  <div className="relative aspect-[3/4] bg-bone overflow-hidden mb-3 lg:mb-4 img-bone-grade">
+                  <div className="relative aspect-[3/4] bg-bone overflow-hidden rounded-xl mb-3 lg:mb-4 img-bone-grade">
                     <img
                       src={resolveImage(p.image_url, p.slug)}
                       alt={p.name}

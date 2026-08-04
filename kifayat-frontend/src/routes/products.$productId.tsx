@@ -923,7 +923,7 @@ function ProductPage() {
                   params={{ productId: p.slug || p.id }}
                   className="group"
                 >
-                  <div className="aspect-square bg-paper overflow-hidden mb-3 relative border border-coal/6">
+                  <div className="aspect-square bg-paper overflow-hidden rounded-xl mb-3 relative border border-coal/6">
                     {p.image_url ? (
                       <img
                         src={p.image_url}

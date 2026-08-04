@@ -54,7 +54,7 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
         className="block"
         data-cursor="view"
       >
-        <div className="relative aspect-[3/4] bg-paper overflow-hidden img-bone-grade">
+        <div className="relative aspect-[3/4] bg-paper overflow-hidden rounded-xl img-bone-grade">
           {p.image ? (
             <img
               src={p.image}
