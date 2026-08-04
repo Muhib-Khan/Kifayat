@@ -317,9 +317,9 @@ function CategoryPage() {
                 </div>
               )
             ) : isLoading ? (
-              <ProductGridSkeleton count={8} columns="grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 lg:gap-6" />
+              <ProductGridSkeleton count={8} columns="grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-5 lg:gap-5" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-5 lg:gap-5">
                 {products.map((p, i) => (
                   <ProductCard
                     key={p.id}

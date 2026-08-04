@@ -285,9 +285,9 @@ function ProductsPage() {
                 </div>
               )
             ) : isLoading ? (
-              <ProductGridSkeleton count={9} columns="grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-6 lg:gap-10" />
+              <ProductGridSkeleton count={9} columns="grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-5 lg:gap-6" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-6 lg:gap-10">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-5 lg:gap-6">
                 {products.map((p, i) => (
                   <ProductCard
                     key={p.id}

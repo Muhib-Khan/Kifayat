@@ -48,7 +48,7 @@ function Wishlist() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" aria-hidden>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4" aria-hidden>
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="space-y-3">
             <div className="aspect-[3/4] rounded-xl animate-pulse bg-secondary" />
@@ -86,7 +86,7 @@ function Wishlist() {
       <p className="text-sm text-muted-foreground">
         {data.length} saved item{data.length !== 1 ? "s" : ""}
       </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         {data.map((w: any) => {
           const p = w.product;
           return (
