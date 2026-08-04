@@ -1,0 +1,13 @@
+# Trash only — everything else is committed
+node_modules/
+dist/
+*.log
+uploads/
+.local/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+.idea/

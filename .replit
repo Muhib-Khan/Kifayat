@@ -1,0 +1,79 @@
+modules = ["nodejs-20", "python-base-3.13"]
+[nix]
+channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Backend"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Frontend"
+
+[[workflows.workflow]]
+name = "Backend"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd kifayat-backend && npm install && PORT=3001 node server.js"
+waitForPort = 3001
+
+[[workflows.workflow]]
+name = "Frontend"
+author = "agent"
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd kifayat-frontend && npm install --include=dev && npm run dev"
+waitForPort = 5000
+
+[[ports]]
+localPort = 3001
+externalPort = 3001
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 5174
+externalPort = 3000
+
+[userenv]
+
+[userenv.shared]
+RESEND_FROM_EMAIL = ""
+ADMIN_EMAILS = "aaliyan12345ilf@gmail.com,muhibkhan.dev@gmail.com,asharkhanggc@gmail.com,muhibkhan2410@gmail.com"
+FIREBASE_PROJECT_ID = "kifayat--auth-data"
+FRONTEND_URL = "http://localhost:5173"
+HHC_API_URL = "https://member.hhcdropshipping.com/api"
+HHC_ORIGIN = "https://member.hhcdropshipping.com"
+HHC_REFERER = "https://member.hhcdropshipping.com/"
+JWT_EXPIRE = "30d"
+NODE_ENV = "production"
+PORT = "5000"
+SITE_NAME = "Kifayat"
+SITE_URL = "http://localhost:5173"
+VITE_CONTACT_EMAIL = "support@kifayat.com"
+VITE_CONTACT_PHONE = ""
+VITE_SITE_NAME = "Kifayat"
+VITE_SITE_URL = "http://localhost:5173"
+VITE_STORE_ADDRESS = ""
+VITE_STORE_CITY = "Karachi"
+EMAIL_USER = "Aaliyan12345ilf@gmail.com"
+FIREBASE_SERVICE_ACCOUNT_PATH = "./firebase-service-account.json"
