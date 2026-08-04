@@ -115,10 +115,11 @@ function HeaderSearch() {
                   <p className="eyebrow text-coal/40 text-[10px] mb-2">Suggestions</p>
                   <ul className="space-y-0.5">
                     {data.queries.slice(0, 5).map((s) => (
-                      <li key={s}>
+                      <li key={s} className="min-w-0">
                         <button onClick={() => go(s)}
                           className="w-full text-left px-2 py-1.5 text-sm hover:bg-paper transition flex items-center gap-2">
-                          <span className="text-brass text-xs">→</span> {s}
+                          <span className="text-brass text-xs shrink-0">→</span>
+                          <span className="min-w-0 truncate">{s}</span>
                         </button>
                       </li>
                     ))}
