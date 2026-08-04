@@ -103,7 +103,7 @@ export function Products() {
 
         {/* ── 4-col product grid ── */}
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-10 lg:gap-x-5 lg:gap-y-12">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-10 lg:gap-x-5 lg:gap-y-12">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="space-y-3">
                 <div className="aspect-[3/4] bg-bone/50 animate-pulse" />
@@ -129,7 +129,7 @@ export function Products() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-10 lg:gap-x-5 lg:gap-y-12">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-10 lg:gap-x-5 lg:gap-y-12">
             {featured.map((p, i) => (
               <motion.article
                 key={p.id}
