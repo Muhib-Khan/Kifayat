@@ -492,17 +492,19 @@ const googleAuth = async (req, res) => {
       });
     }
 
-    // Block if an email-password account already uses this address
+    // If an email-password account already uses this address, upgrade it to
+    // Google auth so the user can sign in with Google and keep their data.
     const emailUser = await User.findOne({
       email: normalizedEmail,
       authProvider: "email",
     });
     if (emailUser) {
-      return res.status(409).json({
-        success: false,
-        message:
-          "An account with this email already exists. Please log in with your email and password.",
-      });
+      emailUser.authProvider = "google";
+      emailUser.firebaseUID = uid;
+      emailUser.isVerified = true;
+      emailUser.name = displayName || emailUser.name;
+      await emailUser.save();
+      return issueSession(req, res, emailUser, "google");
     }
 
     let user = await User.findOne({
