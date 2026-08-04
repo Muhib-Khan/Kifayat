@@ -19,13 +19,21 @@ export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
 
-  const { data: heroProducts = [], isLoading } = useQuery({
-    queryKey: ["hero", "products"],
-    queryFn: () => listProducts({ limit: 2 }),
+  const { data: leftProducts = [], isLoading: loadingLeft } = useQuery({
+    queryKey: ["hero", "left"],
+    queryFn: () => listProducts({ search: "track suit trouser set", limit: 1 }),
     staleTime: 60_000,
   });
 
-  const [leftProduct, rightProduct] = heroProducts;
+  const { data: rightProducts = [], isLoading: loadingRight } = useQuery({
+    queryKey: ["hero", "right"],
+    queryFn: () => listProducts({ search: "earbuds", limit: 1 }),
+    staleTime: 60_000,
+  });
+
+  const [leftProduct] = leftProducts;
+  const [rightProduct] = rightProducts;
+  const isLoading = loadingLeft || loadingRight;
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const sp = useSpring(scrollYProgress, { stiffness: 80, damping: 26, mass: 0.2 });
