@@ -438,27 +438,30 @@ function ProductPage() {
               <>
                 {/* Main media — square-ish like Amazon */}
                 <div
-                  className="relative bg-paper aspect-square overflow-hidden group border border-coal/6"
+                  className="relative w-full bg-paper overflow-hidden group border border-coal/6"
+                  style={{ paddingBottom: "100%" }}
                   onClick={() => {
                     if (gallery[activeImg].type === "image") openLightbox();
                   }}
                 >
-                  {gallery[activeImg].type === "video" ? (
-                    <video
-                      src={gallery[activeImg].url}
-                      controls
-                      playsInline
-                      preload="metadata"
-                      className="size-full object-contain p-4"
-                      aria-label={`${product.name} video`}
-                    />
-                  ) : (
-                    <ZoomImage
-                      src={gallery[activeImg].url}
-                      alt={product.name}
-                      className="size-full object-contain p-4 cursor-zoom-in"
-                    />
-                  )}
+                  <div className="absolute inset-0">
+                    {gallery[activeImg].type === "video" ? (
+                      <video
+                        src={gallery[activeImg].url}
+                        controls
+                        playsInline
+                        preload="metadata"
+                        className="size-full object-contain p-4"
+                        aria-label={`${product.name} video`}
+                      />
+                    ) : (
+                      <ZoomImage
+                        src={gallery[activeImg].url}
+                        alt={product.name}
+                        className="size-full object-contain p-4 cursor-zoom-in"
+                      />
+                    )}
+                  </div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -528,10 +531,12 @@ function ProductPage() {
                 </button>
               </>
             ) : (
-              <div className="relative bg-bone aspect-square overflow-hidden grid place-items-center border border-coal/6">
-                <span className="font-display italic text-[140px] leading-none text-coal/6 select-none">
-                  {(product.name || "K")[0].toUpperCase()}
-                </span>
+              <div className="relative w-full bg-bone overflow-hidden border border-coal/6" style={{ paddingBottom: "100%" }}>
+                <div className="absolute inset-0 grid place-items-center">
+                  <span className="font-display italic text-[140px] leading-none text-coal/6 select-none">
+                    {(product.name || "K")[0].toUpperCase()}
+                  </span>
+                </div>
                 {product.badge && (
                   <span className="absolute top-3 left-3 bg-brass text-coal eyebrow px-2.5 py-1 text-[10px]">
                     {product.badge}

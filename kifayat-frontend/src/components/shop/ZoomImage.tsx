@@ -44,7 +44,7 @@ export function ZoomImage({
         alt={alt}
         loading="lazy"
         decoding="async"
-        className="size-full object-contain transition-transform duration-500 ease-out [@media(hover:hover)]:hover:scale-[1.45] motion-reduce:transition-none motion-reduce:hover:scale-100"
+        className="size-full object-contain transition-transform duration-500 ease-out [@media(hover:hover)_and_(pointer:fine)]:hover:scale-[1.45] motion-reduce:transition-none motion-reduce:hover:scale-100"
       />
     </div>
   );
