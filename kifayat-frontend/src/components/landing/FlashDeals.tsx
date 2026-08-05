@@ -3,7 +3,6 @@ import { ArrowUpRight, Flame } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { listProducts } from "@/lib/shop.functions";
 import { resolveImage } from "@/lib/product-image-map";
-import { motion } from "framer-motion";
 import { useRef } from "react";
 
 function smartTitle(name: string, max = 28): string {
@@ -61,13 +60,9 @@ export function FlashDeals() {
             ref={scrollRef}
             className="flex gap-4 lg:gap-5 overflow-x-auto no-scrollbar pb-2 -mx-5 lg:-mx-10 px-5 lg:px-10"
           >
-            {items.map((p, i) => (
-              <motion.div
+            {items.map((p) => (
+              <div
                 key={p.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: Math.min(i * 0.05, 0.4), ease: [0.22, 1, 0.36, 1] }}
                 className="flex-none w-40 sm:w-44 lg:w-52 group"
               >
                 <Link to="/products/$productId" params={{ productId: p.slug }}>
@@ -108,7 +103,7 @@ export function FlashDeals() {
                     )}
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

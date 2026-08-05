@@ -6,7 +6,6 @@ import { isWishlisted, toggleWishlist } from "@/lib/account.functions";
 import { useAuth } from "@/lib/auth-store";
 import { resolveImage } from "@/lib/product-image-map";
 import { toast } from "sonner";
-import { motion, type Variants } from "framer-motion";
 
 const WHY_KIFAYAT = [
   { icon: Banknote, title: "Cash on Delivery", text: "Pay when your order lands on your doorstep — no card, no risk." },
@@ -14,15 +13,6 @@ const WHY_KIFAYAT = [
   { icon: BadgeCheck, title: "Verified Quality", text: "Every product is checked by hand before it leaves our shelves." },
   { icon: RotateCcw, title: "Easy Returns", text: "Changed your mind? 7-day returns, no questions asked." },
 ];
-
-const cardVariants: Variants = {
-  hidden:  { opacity: 0, y: 28 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.65, delay: Math.min(i * 0.07, 0.5), ease: [0.22, 1, 0.36, 1] },
-  }),
-};
 
 function WishlistHeart({ productId, slug }: { productId: string; slug: string }) {
   const wishKey = productId || slug;
@@ -130,14 +120,9 @@ export function Products() {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-10 lg:gap-x-5 lg:gap-y-12">
-            {featured.map((p, i) => (
-              <motion.article
+            {featured.map((p) => (
+              <article
                 key={p.id}
-                custom={i}
-                variants={cardVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-60px" }}
                 className="group"
               >
                 <Link to="/products/$productId" params={{ productId: p.slug }} className="block" data-cursor="view">
@@ -198,7 +183,7 @@ export function Products() {
                     )}
                   </div>
                 </div>
-              </motion.article>
+              </article>
             ))}
           </div>
         )}
