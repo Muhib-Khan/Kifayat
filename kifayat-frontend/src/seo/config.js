@@ -15,15 +15,8 @@ const SEO_CONFIG = {
     logo: "/favicon.svg",
     description:
       "Kifayat is a wholesale and retail e-commerce platform offering quality products across multiple categories.",
-    contactEmail: import.meta.env.VITE_CONTACT_EMAIL || "support@kifayat.com",
+    contactEmail: import.meta.env.VITE_CONTACT_EMAIL || "contact@kifayat.co",
     contactPhone: import.meta.env.VITE_CONTACT_PHONE || "",
-    address: {
-      streetAddress: import.meta.env.VITE_STORE_ADDRESS || "",
-      addressLocality: import.meta.env.VITE_STORE_CITY || "Karachi",
-      addressRegion: "Sindh",
-      postalCode: "",
-      addressCountry: "PK",
-    },
   },
 };
 

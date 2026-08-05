@@ -22,7 +22,7 @@ export function FounderLetter() {
             We started Kifayat because too much of what arrives at our doors in Pakistan is <span className="text-brass">loud</span>, lazily packed, or quietly fake. We wanted a smaller shelf. Fewer things, each one chosen on purpose, each one honest about its price.
           </p>
           <p>
-            What you see here is the shelf I keep at home — eight to twelve pieces a week, photographed in our Karachi studio, packed by hand, and sent anywhere in the country. If something doesn't sit right, send it back. No questions, no charge.
+            What you see here is the shelf I keep at home — eight to twelve pieces a week, photographed in our studio, packed by hand, and sent anywhere in the country. If something doesn't sit right, send it back. No questions, no charge.
           </p>
           <p className="text-coal/65 text-2xl md:text-3xl lg:text-4xl">
             Take your time. Buy slowly. <span className="text-coal">— shukria.</span>

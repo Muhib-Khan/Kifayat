@@ -93,9 +93,9 @@ export function LegalPage({ title, subtitle, effectiveDate, sections, related }:
         )}
 
         <p className="text-xs text-muted-foreground border-t border-border pt-6 mt-10">
-          Effective date: {effectiveDate ?? "July 2026"} · Kifayat, Karachi, Pakistan ·{" "}
-          <a href="mailto:support@kifayat.com" className="underline hover:text-foreground transition-colors">
-            support@kifayat.com
+          Effective date: {effectiveDate ?? "July 2026"} · Kifayat, Pakistan ·{" "}
+          <a href="mailto:contact@kifayat.co" className="underline hover:text-foreground transition-colors">
+            contact@kifayat.co
           </a>
         </p>
       </div>

@@ -27,7 +27,7 @@ function PrivacyPage() {
       sections={[
         {
           heading: "Who We Are",
-          body: "Kifayat is an e-commerce platform based in Karachi, Pakistan, operating at kifayat.com. References to Kifayat, we, us, or our in this policy refer to the entity operating this platform. Your use of our services constitutes acceptance of this Privacy Policy.",
+          body: "Kifayat is an e-commerce platform operating in Pakistan at kifayat.com. References to Kifayat, we, us, or our in this policy refer to the entity operating this platform. Your use of our services constitutes acceptance of this Privacy Policy.",
         },
         {
           heading: "Information We Collect",
@@ -111,12 +111,12 @@ function PrivacyPage() {
             "Deletion: you may request deletion of your account and associated data, subject to our legal retention obligations.",
             "Portability: you may request your order and account data in a machine-readable format.",
             "Opt-out: you may opt out of marketing communications at any time via the unsubscribe link in any email.",
-            "To exercise any of these rights, email privacy@kifayat.com with the subject line Data Request. We will respond within 30 days.",
+            "To exercise any of these rights, email privacy@kifayat.co with the subject line Data Request. We will respond within 30 days.",
           ],
         },
         {
           heading: "Children's Privacy",
-          body: "Kifayat is not directed at children under the age of 13. We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, please contact privacy@kifayat.com and we will promptly delete it.",
+          body: "Kifayat is not directed at children under the age of 13. We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, please contact privacy@kifayat.co and we will promptly delete it.",
         },
         {
           heading: "Changes to This Policy",
@@ -124,7 +124,7 @@ function PrivacyPage() {
         },
         {
           heading: "Contact & Complaints",
-          body: "For privacy-related queries or concerns, contact us at privacy@kifayat.com. If you believe we have handled your data unlawfully, you have the right to file a complaint with the relevant Pakistani data protection authority.",
+          body: "For privacy-related queries or concerns, contact us at privacy@kifayat.co. If you believe we have handled your data unlawfully, you have the right to file a complaint with the relevant Pakistani data protection authority.",
         },
       ]}
     />

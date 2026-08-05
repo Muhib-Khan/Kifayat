@@ -115,7 +115,7 @@ function CategoryPage() {
         title={`${categoryName} — Shop Online in Pakistan`}
         description={categoryDesc}
         path={`/category/${slug}`}
-        keywords={`${categoryName} online Pakistan, buy ${categoryName.toLowerCase()} Karachi, ${categoryName.toLowerCase()} shop Pakistan`}
+        keywords={`${categoryName} online Pakistan, buy ${categoryName.toLowerCase()} Pakistan, ${categoryName.toLowerCase()} shop Pakistan`}
       />
       <CollectionPageSchema
         name={`${categoryName} — Kifayat`}

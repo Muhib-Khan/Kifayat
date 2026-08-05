@@ -103,7 +103,7 @@ export function Founders() {
           transition={{ duration: 1, delay: 0.5 }}
           className="mt-0 border-t border-bone/10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 eyebrow text-bone/30"
         >
-          <span>Karachi, Pakistan — Est. 2024</span>
+          <span>Pakistan — Est. 2024</span>
           <span className="flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-brass animate-pulse" />
             Dispatching Pakistan-wide daily

@@ -94,7 +94,7 @@ async function sendMail({ from, to, subject, html, text }) {
   const headers = {
     "X-Mailer": "Kifayat",
     "X-Entity-Ref-ID": `${subject}-${Date.now()}`,
-    "List-Unsubscribe": "<mailto:support@kifayat.com?subject=unsubscribe>",
+    "List-Unsubscribe": "<mailto:contact@kifayat.co?subject=unsubscribe>",
   };
 
   // Prefer Gmail because it is configured for this project and does not

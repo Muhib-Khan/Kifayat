@@ -13,9 +13,9 @@ function Contact() {
     <PageShell>
       <SEO
         title="Contact Us — We Reply Within an Hour"
-        description="Get in touch with the Kifayat team in Karachi. We reply within an hour during business hours. Reach us by email, phone, or WhatsApp."
+        description="Get in touch with the Kifayat team in Pakistan. We reply within an hour during business hours. Reach us by email, phone, or WhatsApp."
         path="/contact"
-        keywords="contact Kifayat, Karachi online store support, customer service Pakistan, WhatsApp shopping help"
+        keywords="contact Kifayat, online store support Pakistan, customer service Pakistan, WhatsApp shopping help"
       />
       <LocalBusinessSchema />
 
@@ -52,9 +52,9 @@ function Contact() {
 
         <div className="space-y-6">
           {[
-            { Icon: Mail, label: "Email", value: "hello@kifayat.com" },
+            { Icon: Mail, label: "Email", value: "contact@kifayat.co" },
             { Icon: Phone, label: "Phone / WhatsApp", value: "+92 300 0000000" },
-            { Icon: MapPin, label: "Location", value: "Karachi, Pakistan" },
+            { Icon: MapPin, label: "Location", value: "Pakistan — nationwide delivery" },
             { Icon: MessageCircle, label: "Hours", value: "Mon–Sat, 9 am–9 pm" },
           ].map(({ Icon, label, value }) => (
             <div key={label} className="flex items-start gap-4 bg-card border border-border rounded-xl p-4">

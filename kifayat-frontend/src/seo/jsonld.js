@@ -17,14 +17,6 @@ export function organizationSchema() {
       email: organization.contactEmail,
       contactType: "customer service",
     },
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: organization.address.streetAddress,
-      addressLocality: organization.address.addressLocality,
-      addressRegion: organization.address.addressRegion,
-      postalCode: organization.address.postalCode,
-      addressCountry: organization.address.addressCountry,
-    },
   };
 }
 

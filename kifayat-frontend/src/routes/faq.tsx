@@ -15,7 +15,7 @@ const groups = [
     items: [
       ["How do I place an order?", "Browse the catalogue, add items to your cart and proceed to checkout. You can pay with card, cash on delivery, Easypaisa or Jazzcash."],
       ["Can I order without an account?", "Yes — guest checkout is supported, but signing up lets you track orders and earn rewards."],
-      ["Do you deliver all across Pakistan?", "Yes — we deliver to every city and town across Pakistan. Dispatch is nationwide from our Karachi hub."],
+      ["Do you deliver all across Pakistan?", "Yes — we deliver to every city and town across Pakistan. Dispatch is nationwide."],
     ],
   },
   {
@@ -46,7 +46,7 @@ function FAQ() {
         title="FAQ — Frequently Asked Questions"
         description="Common questions about ordering, delivery, payments and returns at Kifayat. Get answers about our Pakistan-wide shipping, COD, and easy return policy."
         path="/faq"
-        keywords="Kifayat FAQ, online shopping questions, delivery Karachi, return policy Pakistan, COD Pakistan"
+        keywords="Kifayat FAQ, online shopping questions, delivery Pakistan, return policy Pakistan, COD Pakistan"
       />
       <FAQSchema faqs={allFaqs} />
 

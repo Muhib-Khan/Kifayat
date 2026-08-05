@@ -11,9 +11,9 @@ function ShippingPolicyPage() {
     <>
       <SEO
         title="Shipping Policy — Fast Delivery Across Pakistan"
-        description="Kifayat ships Pakistan-wide. 2–4 day delivery in Karachi, nationwide dispatch, free shipping over Rs 2,500. Learn about tracking, fees, and failed deliveries."
+        description="Kifayat ships Pakistan-wide. 2–5 day delivery all across Pakistan, free shipping over Rs 2,500. Learn about tracking, fees, and failed deliveries."
         path="/shipping-policy"
-        keywords="Kifayat shipping, delivery Pakistan, free shipping Karachi, COD Pakistan, parcel tracking"
+        keywords="Kifayat shipping, delivery Pakistan, free shipping Pakistan, COD Pakistan, parcel tracking"
       />
     <LegalPage
       title="Shipping Policy"
@@ -28,15 +28,15 @@ function ShippingPolicyPage() {
           heading: "Coverage Area",
           body: [
             "Kifayat delivers to all cities and towns across Pakistan.",
-            "Same-day and next-day delivery windows are available within Karachi metropolitan area for eligible orders.",
+            "Same-day and next-day delivery windows are available in select major cities for eligible orders.",
             "Remote areas and far-flung regions may experience extended delivery times of up to 7–10 business days. You will be notified at checkout if your area qualifies.",
           ],
         },
         {
           heading: "Delivery Timeframes",
           body: [
-            "Karachi same-day: available on eligible orders placed before 12:00 PM. Not available for all items.",
-            "Karachi next-day: orders placed before 2:00 PM on business days.",
+            "Same-day (select major cities, e.g. Karachi): available on eligible orders placed before 12:00 PM. Not available for all items.",
+            "Next-day (select major cities, e.g. Karachi): orders placed before 2:00 PM on business days.",
             "Major cities (Lahore, Islamabad, Rawalpindi, Faisalabad, Multan): 2–3 business days.",
             "All other cities and towns: 3–5 business days.",
             "Remote areas: 5–10 business days.",
@@ -50,8 +50,8 @@ function ShippingPolicyPage() {
             "First order, every customer: FREE delivery — on us. No code needed, it applies automatically at checkout.",
             "Standard delivery Pakistan-wide: FREE on orders above Rs 2,500.",
             "Standard delivery below Rs 2,500: Rs 200 flat fee.",
-            "Express next-day, Karachi only: Rs 350 flat fee, regardless of order value.",
-            "Same-day Karachi only: Rs 500 flat fee.",
+            "Express next-day (select major cities): Rs 350 flat fee, regardless of order value.",
+            "Same-day (select major cities): Rs 500 flat fee.",
             "Shipping fees are non-refundable except where the return is due to our error such as wrong or damaged item.",
           ],
         },
@@ -101,7 +101,7 @@ function ShippingPolicyPage() {
           body: [
             "Kifayat is not liable for shipping delays caused by circumstances beyond our reasonable control, including natural disasters, floods, strikes, courier operational failures, government actions, or public health emergencies.",
             "During Ramadan, Eid, and other national holidays, delivery timelines may be extended. We will post advance notice on the website.",
-            "If your order is significantly delayed beyond the estimated timeframe, contact support@kifayat.com for an update.",
+            "If your order is significantly delayed beyond the estimated timeframe, contact contact@kifayat.co for an update.",
           ],
         },
         {
@@ -114,7 +114,7 @@ function ShippingPolicyPage() {
         },
         {
           heading: "Contact for Shipping Issues",
-          body: "For any shipping-related queries, tracking issues, or non-delivery claims, contact support@kifayat.com or reach us on WhatsApp at the number listed on our Contact page. Please have your order number ready.",
+          body: "For any shipping-related queries, tracking issues, or non-delivery claims, contact contact@kifayat.co or reach us on WhatsApp at the number listed on our Contact page. Please have your order number ready.",
         },
       ]}
     />

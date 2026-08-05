@@ -51,7 +51,7 @@ export function Hero() {
           <span className="h-px w-8 bg-coal/25 shrink-0" />
           Volume 03 · Autumn Edit
         </span>
-        <span className="hidden sm:block">24.86° N · Karachi</span>
+        <span className="hidden sm:block">Ships nationwide</span>
         <span className="hidden md:flex items-center gap-2">
           <span className="size-1.5 rounded-full bg-brass animate-pulse" />
           Live inventory

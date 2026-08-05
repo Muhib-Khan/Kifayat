@@ -84,7 +84,7 @@ function TermsPage() {
         },
         {
           heading: "Returns, Refunds & Disputes",
-          body: "Returns and refunds are governed exclusively by our Return & Refund Policy. In the event of a dispute regarding an order, customers must contact support@kifayat.com and allow up to 7 business days for resolution before escalating to any third party, payment provider, or regulatory body. Kifayat's decision on returns and refunds, made in accordance with its published policy, is final.",
+          body: "Returns and refunds are governed exclusively by our Return & Refund Policy. In the event of a dispute regarding an order, customers must contact contact@kifayat.co and allow up to 7 business days for resolution before escalating to any third party, payment provider, or regulatory body. Kifayat's decision on returns and refunds, made in accordance with its published policy, is final.",
         },
         {
           heading: "Limitation of Liability",
@@ -101,7 +101,7 @@ function TermsPage() {
         },
         {
           heading: "Governing Law & Dispute Resolution",
-          body: "These Terms are governed by the laws of the Islamic Republic of Pakistan. Any dispute that cannot be resolved through our support process will be subject to the exclusive jurisdiction of the courts of Karachi, Pakistan. You waive any right to a jury trial and agree not to participate in any class-action lawsuit against Kifayat.",
+          body: "These Terms are governed by the laws of the Islamic Republic of Pakistan. Any dispute that cannot be resolved through our support process will be subject to the exclusive jurisdiction of the courts of Pakistan. You waive any right to a jury trial and agree not to participate in any class-action lawsuit against Kifayat.",
         },
         {
           heading: "Modifications",
@@ -109,7 +109,7 @@ function TermsPage() {
         },
         {
           heading: "Contact",
-          body: "For any legal enquiries, please email legal@kifayat.com. For general support, contact support@kifayat.com. Response times are 1–2 business days.",
+          body: "For any legal enquiries, please email legal@kifayat.co. For general support, contact contact@kifayat.co. Response times are 1–2 business days.",
         },
       ]}
     />

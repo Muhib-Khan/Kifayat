@@ -75,18 +75,12 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Middle — address card + socials */}
-        <div className="py-12 grid sm:grid-cols-3 gap-10 border-b border-bone/10">
-          <div>
-            <p className="eyebrow text-bone/40 mb-3">Studio</p>
-            <p className="text-bone/85 leading-relaxed">
-              Khayaban-e-Shahbaz<br />Karachi, Pakistan
-            </p>
-          </div>
+        {/* Middle — dispatch + socials */}
+        <div className="py-12 grid sm:grid-cols-2 gap-10 border-b border-bone/10">
           <div>
             <p className="eyebrow text-bone/40 mb-3">Dispatch</p>
             <p className="text-bone/85 leading-relaxed">
-              Pakistan-wide · 2–5 days<br />Free over Rs 2,500
+              Pakistan-wide · 2–5 days
             </p>
           </div>
           <div>
@@ -102,9 +96,9 @@ export function Footer() {
         </div>
         <div className="py-8 grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-bone/10">
           {[
-            { Icon: Truck, title: "Delivery, explained", body: "Pakistan-wide · 2–5 days · Free over Rs 2,500", to: "/shipping-policy" },
+            { Icon: Truck, title: "Delivery, explained", body: "Pakistan-wide · 2–5 days", to: "/shipping-policy" },
             { Icon: ShieldCheck, title: "Pay your way", body: "Cash on delivery is available at checkout", to: "/faq" },
-            { Icon: Headphones, title: "Need a hand?", body: "support@kifayat.com · replies in 1–2 business days", to: "/contact" },
+            { Icon: Headphones, title: "Need a hand?", body: "contact@kifayat.co · replies in 1–2 business days", to: "/contact" },
           ].map(({ Icon, title, body, to }) => (
             <Link key={title} to={to} className="group border border-bone/10 p-4 hover:border-brass/60 transition-colors">
               <Icon className="size-4 text-brass mb-4" strokeWidth={1.4} aria-hidden="true" />

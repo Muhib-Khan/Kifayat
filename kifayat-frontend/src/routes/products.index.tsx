@@ -104,7 +104,7 @@ function ProductsPage() {
         title="All Products — Electronics, Fashion, Home Goods & More"
         description="Browse Kifayat's full catalogue of quality products. Electronics, fashion, home goods, beauty, sports and more — with free delivery over Rs 2,500 across Pakistan."
         path="/products"
-        keywords="online shopping Pakistan, electronics Karachi, fashion Pakistan, home goods online, buy online Karachi"
+        keywords="online shopping Pakistan, electronics Pakistan, fashion Pakistan, home goods online, buy online Pakistan"
       />
       <BreadcrumbSchema
         crumbs={[

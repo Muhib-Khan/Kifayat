@@ -2,7 +2,7 @@ import { Check, Headphones, RotateCcw, ShieldCheck, Truck } from "lucide-react";
 
 const values = [
   { Icon: Check, n: "01", t: "Curated, not crowded", d: "Every item earns its place. We’d rather show you one perfect piece than fifty mediocre ones." },
-  { Icon: Truck, n: "02", t: "Pakistan-wide dispatch", d: "Same-day across Karachi metro. 2–5 working days to every other city in the country." },
+  { Icon: Truck, n: "02", t: "Pakistan-wide dispatch", d: "We deliver all across Pakistan — 2–5 working days to every city and town in the country." },
   { Icon: ShieldCheck, n: "03", t: "Honest pricing, always", d: "No inflated MRPs. No fake discounts. The price you see is the fairest one we could find." },
   { Icon: RotateCcw, n: "04", t: "7-day no-questions returns", d: "Change of heart? Pick-up from your door, refund in 48 hours. Zero friction." },
 ];
@@ -37,7 +37,7 @@ export function ValueStrip() {
         <div className="mt-12 lg:mt-16 pt-5 border-t border-coal/10 flex flex-wrap gap-x-6 gap-y-3 text-[11px] text-coal/55">
           <span className="inline-flex items-center gap-2"><Check className="size-3 text-brass" strokeWidth={2} /> Prices shown in PKR</span>
           <span className="inline-flex items-center gap-2"><ShieldCheck className="size-3 text-brass" strokeWidth={2} /> Cash on delivery at checkout</span>
-          <span className="inline-flex items-center gap-2"><Headphones className="size-3 text-brass" strokeWidth={2} /> Support@kifayat.com</span>
+          <span className="inline-flex items-center gap-2"><Headphones className="size-3 text-brass" strokeWidth={2} /> contact@kifayat.co</span>
         </div>
       </div>
     </section>

@@ -13,7 +13,7 @@ function ReturnPolicyPage() {
         title="Return & Refund Policy — 7-Day Easy Returns"
         description="Kifayat's 7-day return and refund policy. Learn what can be returned, how to start a return online in Pakistan, and our refund processing timelines."
         path="/return-policy"
-        keywords="Kifayat return policy, online shopping returns Pakistan, refund policy Karachi, 7 day returns"
+        keywords="Kifayat return policy, online shopping returns Pakistan, refund policy Pakistan, 7 day returns"
       />
     <LegalPage
       title="Return & Refund Policy"
@@ -85,7 +85,7 @@ function ReturnPolicyPage() {
           heading: "Damaged, Defective, or Incorrect Items",
           callout: "You must report damaged, defective, or incorrect items within 48 hours of delivery with photographic evidence.",
           body: [
-            "Email support@kifayat.com with your order number, a description of the issue, and clear photos of the item, packaging, and any damage.",
+            "Email contact@kifayat.co with your order number, a description of the issue, and clear photos of the item, packaging, and any damage.",
             "If the claim is verified, we will arrange a free replacement or full refund at our discretion.",
             "Claims submitted after 48 hours of delivery for damaged items will be assessed on a case-by-case basis and may be denied.",
             "Kifayat is not responsible for damage caused by misuse, mishandling, or improper storage after delivery.",

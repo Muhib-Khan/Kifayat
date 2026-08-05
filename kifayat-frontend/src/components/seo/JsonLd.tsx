@@ -52,7 +52,7 @@ export function OrganizationSchema() {
         name: SITE_NAME,
         url: SITE_URL,
         description:
-          "Pakistan's trusted online store delivering quality electronics, fashion, home goods, beauty and more across Karachi and Pakistan-wide.",
+          "Pakistan's trusted online store delivering quality electronics, fashion, home goods, beauty and more all across Pakistan.",
         logo: {
           "@type": "ImageObject",
           "@id": `${SITE_URL}/#logo`,
@@ -63,18 +63,11 @@ export function OrganizationSchema() {
           caption: SITE_NAME,
         },
         image: `${SITE_URL}/og-default.jpg`,
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: "Karachi",
-          addressRegion: "Sindh",
-          addressCountry: "PK",
-          postalCode: "75000",
-        },
         contactPoint: [
           {
             "@type": "ContactPoint",
             contactType: "customer service",
-            email: "support@kifayat.com",
+            email: "contact@kifayat.co",
             availableLanguage: ["English", "Urdu"],
             areaServed: "PK",
           },
@@ -142,17 +135,11 @@ export function HomepageGraphSchema() {
               height: 80,
             },
             image: `${SITE_URL}/og-default.jpg`,
-            address: {
-              "@type": "PostalAddress",
-              addressLocality: "Karachi",
-              addressRegion: "Sindh",
-              addressCountry: "PK",
-            },
             contactPoint: [
               {
                 "@type": "ContactPoint",
                 contactType: "customer service",
-                email: "support@kifayat.com",
+                email: "contact@kifayat.co",
                 availableLanguage: ["English", "Urdu"],
                 areaServed: "PK",
               },
@@ -563,18 +550,6 @@ export function LocalBusinessSchema() {
         image: `${SITE_URL}/og-default.jpg`,
         description:
           "Pakistan's trusted online store for quality products. Free delivery over Rs 2,500.",
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: "Karachi",
-          addressRegion: "Sindh",
-          addressCountry: "PK",
-          postalCode: "75000",
-        },
-        geo: {
-          "@type": "GeoCoordinates",
-          latitude: 24.8607,
-          longitude: 67.0011,
-        },
         openingHoursSpecification: [
           {
             "@type": "OpeningHoursSpecification",
@@ -588,11 +563,8 @@ export function LocalBusinessSchema() {
         priceRange: "Rs 500 - Rs 50,000",
         areaServed: [
           { "@type": "Country", name: "Pakistan" },
-          { "@type": "City", name: "Karachi" },
-          { "@type": "City", name: "Lahore" },
-          { "@type": "City", name: "Islamabad" },
         ],
-        email: "support@kifayat.com",
+        email: "contact@kifayat.co",
         sameAs: [
           "https://www.facebook.com/kifayatpk",
           "https://www.instagram.com/kifayatpk",

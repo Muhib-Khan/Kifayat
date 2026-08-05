@@ -9,7 +9,6 @@ import {
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { ZoomImage } from "@/components/shop/ZoomImage";
-import { Reveal } from "@/components/motion/Reveal";
 import { flyToCart } from "@/components/motion/fly-to-cart-event";
 import { cart, validateCartStock } from "@/lib/cart-store";
 import { toast } from "sonner";
@@ -551,7 +550,7 @@ function ProductPage() {
           <div className="min-w-0 space-y-5 md:col-span-2 md:order-3 xl:col-span-1 xl:order-2 xl:border-r border-coal/8 xl:pr-8 order-last">
 
             {/* Identity */}
-            <Reveal delay={0}>
+            <div>
               {/* Brand + category */}
               <div className="flex items-center gap-2 eyebrow text-coal/40 text-[10px] mb-2">
                 {product.category_name && (
@@ -584,10 +583,10 @@ function ProductPage() {
 
               {/* Divider */}
               <div className="border-t border-coal/8 mt-4" />
-            </Reveal>
+            </div>
 
             {/* Price block */}
-            <Reveal delay={0.04}>
+            <div>
               <div className="flex items-baseline gap-3 flex-wrap">
                 {discountPct > 0 && !hasVoucherDiscount && (
                   <span className="text-red-600 font-bold text-lg">-{discountPct}%</span>
@@ -618,11 +617,11 @@ function ProductPage() {
                 </p>
               )}
               <div className="border-t border-coal/8 mt-4" />
-            </Reveal>
+            </div>
 
             {/* Variations — from the fetched dynamic data (HHC) */}
             {variations.length > 0 && (
-              <Reveal delay={0.055}>
+              <div>
                 <div>
                   <p className="eyebrow text-[10px] text-coal/50 mb-3">§ Options</p>
                   <div className="flex flex-wrap gap-2">
@@ -657,12 +656,12 @@ function ProductPage() {
                   )}
                 </div>
                 <div className="border-t border-coal/8 mt-4" />
-              </Reveal>
+              </div>
             )}
 
             {/* Specs table — key attributes, like Amazon's quick spec rows */}
             {(product.brand || product.sku || product.weight || product.category_name) && (
-              <Reveal delay={0.07}>
+              <div>
                 <table className="w-full text-sm">
                   <tbody>
                     {[
@@ -679,12 +678,12 @@ function ProductPage() {
                   </tbody>
                 </table>
                 <div className="border-t border-coal/8 mt-4" />
-              </Reveal>
+              </div>
             )}
 
             {/* About this product — bullet list */}
             {bullets.length > 0 && (
-              <Reveal delay={0.1}>
+              <div>
                 <p className="eyebrow text-[10px] text-coal/50 mb-3">§ About this product</p>
                 <ul className="space-y-2.5">
                   {visibleBullets.map((b, i) => (
@@ -706,12 +705,12 @@ function ProductPage() {
                     )}
                   </button>
                 )}
-              </Reveal>
+              </div>
             )}
 
             {/* Video */}
             {product.videoUrl && (
-              <Reveal delay={0.12} className="border border-coal/8 overflow-hidden">
+              <div className="border border-coal/8 overflow-hidden">
                 <video
                   src={product.videoUrl}
                   controls
@@ -719,7 +718,7 @@ function ProductPage() {
                   className="w-full aspect-video object-cover"
                   aria-label={`${product.name} video`}
                 />
-              </Reveal>
+              </div>
             )}
           </div>
 
@@ -727,7 +726,7 @@ function ProductPage() {
           <div className="md:sticky md:top-24 md:self-start md:order-2 xl:order-3 space-y-4 order-2">
 
             {/* Price repeat + stock */}
-            <Reveal delay={0} className="border border-coal/15 bg-card p-5 space-y-3">
+            <div className="border border-coal/15 bg-card p-5 space-y-3">
               {/* Product name — shown on mobile/tablet only; on xl+ the
                   full title sits in the middle column. aria-hidden so the
                   single real h1 in the info column stays canonical. */}
@@ -883,10 +882,10 @@ function ProductPage() {
                   {wishlisted ? "Saved to wishlist" : "Save to wishlist"}
                 </button>
               </div>
-            </Reveal>
+            </div>
 
             {/* Trust badges */}
-            <Reveal delay={0.06} className="border border-coal/10 bg-card p-4">
+            <div className="border border-coal/10 bg-card p-4">
               <ul className="space-y-2.5">
                 {[
                   { Icon: ShieldCheck, text: "Authentic, quality guaranteed" },
@@ -900,7 +899,7 @@ function ProductPage() {
                   </li>
                 ))}
               </ul>
-            </Reveal>
+            </div>
           </div>
         </div>
 
