@@ -64,7 +64,7 @@ export const Route = createFileRoute("/products/$productId")({
     <PageShell>
       <section className="max-w-[1600px] mx-auto px-5 lg:px-10 py-6 lg:py-10" aria-hidden>
         <Skeleton className="h-3 w-64 mb-8" />
-        <div className="grid lg:grid-cols-[380px_1fr_300px] xl:grid-cols-[420px_1fr_320px] gap-6 lg:gap-8 items-start">
+        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] xl:grid-cols-[420px_minmax(0,1fr)_320px] gap-6 lg:gap-8 items-start">
           <div className="space-y-3">
             <Skeleton className="aspect-square w-full bg-bone/60" />
             <div className="flex gap-2">
@@ -73,7 +73,7 @@ export const Route = createFileRoute("/products/$productId")({
               ))}
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4 md:col-span-2 xl:col-span-1 xl:order-2">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-8 w-3/4" />
             <Skeleton className="h-4 w-1/2" />
@@ -81,7 +81,7 @@ export const Route = createFileRoute("/products/$productId")({
             <Skeleton className="h-3 w-full" />
             <Skeleton className="h-3 w-2/3" />
           </div>
-          <div className="space-y-4 border border-coal/10 p-5 lg:sticky lg:top-24">
+          <div className="space-y-4 border border-coal/10 p-5 md:order-2 xl:order-3 md:sticky md:top-24">
             <Skeleton className="h-6 w-28" />
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
@@ -422,18 +422,19 @@ function ProductPage() {
             </>
           )}
           <ChevronRight className="size-3" />
-          <span className="text-coal/70 line-clamp-1 max-w-xs">{product.name}</span>
+          <span className="text-coal/70 line-clamp-1 max-w-[50vw] sm:max-w-xs">{product.name}</span>
         </nav>
 
         {/* ══════════════════════════════════════════════
-            TOP ZONE — 3 columns on desktop:
-            [image ~38%] [info+description ~1fr] [buy box ~300px]
-            On mobile: image → buy box → description (order classes)
+            TOP ZONE — responsive:
+            mobile:        image → buy box → description
+            md–lg:         [image | buy box] then description full-width
+            xl+:           3 columns: [image] [info] [buy box ~320px]
         ══════════════════════════════════════════════ */}
-        <div className="grid lg:grid-cols-[380px_1fr_300px] xl:grid-cols-[420px_1fr_320px] gap-6 lg:gap-8 items-start">
+        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] xl:grid-cols-[420px_minmax(0,1fr)_320px] gap-6 lg:gap-8 items-start">
 
           {/* ── COL 1: Image + video gallery ── */}
-          <div className="space-y-3 order-1 lg:order-none w-full max-w-[560px] mx-auto lg:max-w-none lg:mx-0">
+          <div className="space-y-3 order-1 md:max-w-none md:mx-0 w-full max-w-[560px] mx-auto">
             {gallery.length > 0 ? (
               <>
                 {/* Main media — square-ish like Amazon */}
@@ -547,7 +548,7 @@ function ProductPage() {
           </div>
 
           {/* ── COL 2: Title, stars, price, description, specs ── */}
-          <div className="min-w-0 space-y-5 lg:border-r border-coal/8 lg:pr-8 order-last lg:order-none">
+          <div className="min-w-0 space-y-5 md:col-span-2 md:order-3 xl:col-span-1 xl:order-2 xl:border-r border-coal/8 xl:pr-8 order-last">
 
             {/* Identity */}
             <Reveal delay={0}>
@@ -723,10 +724,16 @@ function ProductPage() {
           </div>
 
           {/* ── COL 3: Sticky buy box ── */}
-          <div className="lg:sticky lg:top-24 lg:self-start space-y-4 order-2 lg:order-none">
+          <div className="md:sticky md:top-24 md:self-start md:order-2 xl:order-3 space-y-4 order-2">
 
             {/* Price repeat + stock */}
             <Reveal delay={0} className="border border-coal/15 bg-card p-5 space-y-3">
+              {/* Product name — shown on mobile/tablet only; on xl+ the
+                  full title sits in the middle column. aria-hidden so the
+                  single real h1 in the info column stays canonical. */}
+              <div className="xl:hidden" aria-hidden>
+                <p className="font-display italic text-2xl leading-tight">{product.name}</p>
+              </div>
               <div>
                 <div className="flex items-baseline gap-2 flex-wrap mb-1">
                   <span className="text-2xl font-display font-bold">
