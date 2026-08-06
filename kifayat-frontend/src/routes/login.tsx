@@ -46,9 +46,8 @@ function Login() {
     <PageShell>
       <div className="max-w-md mx-auto px-4 py-14">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <div className="size-10 rounded-md bg-gradient-to-br from-primary to-accent grid place-items-center text-primary-foreground font-display font-bold">K</div>
-            <span className="font-display font-bold text-2xl">Kifayat</span>
+          <Link to="/" className="inline-flex items-center font-display italic text-2xl tracking-tight leading-none">
+            Kifayat<span className="text-brass">.</span>
           </Link>
         </div>
         <div className="bg-card border border-border rounded-2xl p-8 shadow-[var(--shadow-e1)]">
