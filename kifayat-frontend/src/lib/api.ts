@@ -28,7 +28,9 @@ async function request<T = any>(
   }
 
   if (!res.ok) {
-    throw new Error(data?.message || `HTTP ${res.status}`);
+    const err = new Error(data?.message || `HTTP ${res.status}`) as Error & { status?: number };
+    err.status = res.status;
+    throw err;
   }
   return data as T;
 }

@@ -111,8 +111,9 @@ export async function getProductById(id: string): Promise<UIProduct | null> {
   try {
     const data = await api.get<{ success: boolean; product: any }>(`/products/${id}`);
     return data.product ? normalizeProduct(data.product) : null;
-  } catch {
-    return null;
+  } catch (e: any) {
+    if (e?.status === 404) return null;
+    throw e;
   }
 }
 

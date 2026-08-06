@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, isNotFound, notFound, useNavigate } from "@tanstack/react-router";
 import { PageShell } from "@/components/landing/PageShell";
 import {
   Heart, Minus, Plus, Star, Truck, RotateCcw, ShieldCheck,
@@ -37,12 +37,18 @@ const Lightbox = lazy(() =>
 export const Route = createFileRoute("/products/$productId")({
   loader: async ({ params }) => {
     // The backend sleeps when idle and can take 30–60 s to cold-boot.
-    // Retry a few times so a slow wake-up doesn't show a false "Not found."
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const p = await getProductById(params.productId);
-      if (p) return { product: p };
-      if (attempt < 2) {
-        await new Promise((r) => setTimeout(r, 4000 * (attempt + 1)));
+    // Keep retrying for that whole window so a slow wake-up doesn't show
+    // a false "Not found." — a genuine 404 (product removed) bails instantly.
+    for (let attempt = 0; attempt < 8; attempt++) {
+      try {
+        const p = await getProductById(params.productId);
+        if (p) return { product: p };
+        throw notFound();
+      } catch (e) {
+        if (isNotFound(e)) throw e;
+        if (attempt < 7) {
+          await new Promise((r) => setTimeout(r, 10_000));
+        }
       }
     }
     throw notFound();
@@ -63,7 +69,7 @@ export const Route = createFileRoute("/products/$productId")({
     <PageShell>
       <section className="max-w-[1600px] mx-auto px-5 lg:px-10 py-6 lg:py-10" aria-hidden>
         <Skeleton className="h-3 w-64 mb-8" />
-        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] xl:grid-cols-[420px_minmax(0,1fr)_320px] gap-6 lg:gap-8 items-start">
+        <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] xl:grid-cols-[420px_minmax(0,1fr)_320px] gap-6 lg:gap-8 items-start">
           <div className="space-y-3">
             <Skeleton className="aspect-square w-full bg-bone/60" />
             <div className="flex gap-2">
@@ -430,10 +436,10 @@ function ProductPage() {
             md–lg:         [image | buy box] then description full-width
             xl+:           3 columns: [image] [info] [buy box ~320px]
         ══════════════════════════════════════════════ */}
-        <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] xl:grid-cols-[420px_minmax(0,1fr)_320px] gap-6 lg:gap-8 items-start">
+        <div className="grid grid-cols-[minmax(0,1fr)] md:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] lg:grid-cols-[minmax(0,1fr)_minmax(300px,360px)] xl:grid-cols-[420px_minmax(0,1fr)_320px] gap-6 lg:gap-8 items-start">
 
           {/* ── COL 1: Image + video gallery ── */}
-          <div className="space-y-3 order-1 md:max-w-none md:mx-0 w-full max-w-[560px] mx-auto">
+          <div className="min-w-0 space-y-3 order-1 md:max-w-none md:mx-0 w-full max-w-[560px] mx-auto">
             {gallery.length > 0 ? (
               <>
                 {/* Main media — square-ish like Amazon */}
