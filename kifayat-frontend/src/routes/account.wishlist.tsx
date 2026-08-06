@@ -115,7 +115,7 @@ function Wishlist() {
                 <Heart className="size-4 fill-current" strokeWidth={1.4} />
               </button>
               <div className="p-3 sm:p-4">
-                <Link to="/products/$productId" params={{ productId: p.slug }} className="block font-sans font-medium text-sm leading-snug line-clamp-2 hover:text-brass transition-colors">
+                <Link to="/products/$productId" params={{ productId: p.slug }} className="font-sans font-medium text-sm leading-snug line-clamp-2 hover:text-brass transition-colors">
                   {p.name}
                 </Link>
                 <div className="mt-2 flex items-center justify-between gap-2">

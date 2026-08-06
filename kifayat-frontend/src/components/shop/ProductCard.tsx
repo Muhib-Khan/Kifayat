@@ -145,7 +145,7 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
           <Link
             to="/products/$productId"
             params={{ productId: p.slug }}
-            className="block font-sans font-medium text-xs sm:text-sm lg:text-base leading-snug line-clamp-2 hover:text-brass transition-colors"
+            className="font-sans font-medium text-xs sm:text-sm lg:text-base leading-snug line-clamp-2 hover:text-brass transition-colors"
           >
             {title}
           </Link>
