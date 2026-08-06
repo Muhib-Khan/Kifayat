@@ -768,8 +768,8 @@ function AdminProducts() {
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`bg-card border border-border shadow-e1 rounded-2xl overflow-hidden transition-opacity ${isLoading ? "opacity-60 pointer-events-none" : ""}`}>
-          {/* Mobile (below md): stacked card rows — no horizontal scroll */}
-          <div className="md:hidden divide-y divide-border">
+          {/* Cards (below xl): stacked rows — no horizontal scroll */}
+          <div className="xl:hidden divide-y divide-border">
             {products.map((p: any) => {
               const pid = p._id ?? p.id;
               const isHidden = p.hidden ?? false;
@@ -884,18 +884,18 @@ function AdminProducts() {
             })}
           </div>
 
-          {/* Desktop (md+): full table */}
-          <div className="hidden md:block overflow-x-auto">
+          {/* Table (xl+): full table — fits natively, no scroll */}
+          <div className="hidden xl:block overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead>
                 <tr className="border-b border-border bg-secondary/30">
-                  <th className="px-6 py-4 eyebrow text-muted-foreground font-semibold">Product</th>
-                  <th className="px-6 py-4 eyebrow text-muted-foreground font-semibold">Category</th>
-                  <th className="px-6 py-4 eyebrow text-muted-foreground font-semibold text-right">Retail / Cost</th>
-                  <th className="px-6 py-4 eyebrow text-muted-foreground font-semibold text-right">Stock</th>
-                  <th className="px-6 py-4 eyebrow text-muted-foreground font-semibold text-right">Sold</th>
-                  <th className="px-6 py-4 eyebrow text-muted-foreground font-semibold text-center">Status</th>
-                  <th className="px-6 py-4 eyebrow text-muted-foreground font-semibold text-center">Actions</th>
+                  <th className="px-2.5 py-4 eyebrow text-muted-foreground font-semibold">Product</th>
+                  <th className="px-2.5 py-4 eyebrow text-muted-foreground font-semibold">Category</th>
+                  <th className="px-2.5 py-4 eyebrow text-muted-foreground font-semibold text-right">Retail / Cost</th>
+                  <th className="px-2.5 py-4 eyebrow text-muted-foreground font-semibold text-right">Stock</th>
+                  <th className="px-2.5 py-4 eyebrow text-muted-foreground font-semibold text-right">Sold</th>
+                  <th className="px-2.5 py-4 eyebrow text-muted-foreground font-semibold text-center">Status</th>
+                  <th className="px-2.5 py-4 eyebrow text-muted-foreground font-semibold text-center">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -906,17 +906,17 @@ function AdminProducts() {
                   const inStock = p.inStock ?? (p.stock ?? 0) > 0;
                   return (
                     <tr key={pid} className={`hover:bg-secondary/40 transition-colors ${isHidden ? "opacity-50 grayscale" : ""}`}>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
+                      <td className="px-2.5 py-4">
+                        <div className="flex items-center gap-3">
                           {(p.imageUrl ?? p.image_url) ? (
-                            <img src={(p.imageUrl ?? p.image_url).split(",")[0].split("?")[0].trim()} alt={p.name} className="size-10 object-cover bg-secondary border border-border shrink-0 rounded-lg shadow-sm" />
+                            <img src={(p.imageUrl ?? p.image_url).split(",")[0].split("?")[0].trim()} alt={p.name} className="size-8 object-cover bg-secondary border border-border shrink-0 rounded-lg shadow-sm" />
                           ) : (
-                            <div className="size-10 bg-secondary border border-border shrink-0 rounded-lg flex items-center justify-center shadow-sm">
-                              <Package className="size-4 text-muted-foreground" />
+                            <div className="size-8 bg-secondary border border-border shrink-0 rounded-lg flex items-center justify-center shadow-sm">
+                              <Package className="size-3.5 text-muted-foreground" />
                             </div>
                           )}
                           <div>
-                            <p className="font-semibold text-foreground line-clamp-1 max-w-[200px]">{p.name}</p>
+                            <p className="font-semibold text-foreground line-clamp-1 max-w-[140px]" title={p.name}>{p.name}</p>
                             {p.sku && <p className="text-[11px] text-muted-foreground font-mono mt-0.5">{p.sku}</p>}
                             {p.dynamicDataFetched && (
                               <span
@@ -929,8 +929,8 @@ function AdminProducts() {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 font-medium text-muted-foreground">{p.category_name ?? p.category ?? "—"}</td>
-                      <td className="px-6 py-4 text-right whitespace-nowrap">
+                      <td className="px-2.5 py-4 font-medium text-muted-foreground max-w-[150px]"><span className="block truncate">{p.category_name ?? p.category ?? "—"}</span></td>
+                      <td className="px-2.5 py-4 text-right whitespace-nowrap">
                         {(() => {
                           const retail = Number(p.retailPrice ?? p.price ?? 0);
                           const wholesale = Number(p.wholesalePrice ?? 0);
@@ -954,24 +954,24 @@ function AdminProducts() {
                           );
                         })()}
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-2.5 py-4 text-right">
                         <span className={`font-bold inline-flex items-center justify-center min-w-[2rem] px-2 py-1 rounded-md text-xs ${(p.stock ?? 0) === 0 ? "bg-red-500/10 text-red-600" : (p.stock ?? 0) <= 10 ? "bg-amber-500/10 text-amber-600" : "bg-emerald-500/10 text-emerald-600"}`}>
                           {p.stock ?? 0}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-2.5 py-4 text-right">
                         {sales > 0 ? (
                           <span className="font-bold text-brass">{sales}</span>
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-2.5 py-4 text-center">
                         <span className={`inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest rounded border ${inStock ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" : "bg-red-500/10 text-red-600 border-red-500/20"}`}>
                           {inStock ? "In stock" : "Out"}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-2.5 py-4">
                         <div className="flex gap-2 justify-center">
                           <button
                             onClick={() => setEditingProduct(p)}
@@ -991,10 +991,12 @@ function AdminProducts() {
                             onClick={() => dynDataMut.mutate(pid)}
                             disabled={dynDataMut.isPending && dynFetchingId === pid}
                             title={p.dynamicDataFetched ? "Refresh dynamic data from HHC" : "Get dynamic data from HHC"}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold border rounded-lg transition-all shadow-sm whitespace-nowrap ${p.dynamicDataFetched ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10" : "border-border bg-card hover:bg-secondary hover:border-brass/50 text-muted-foreground hover:text-brass"} disabled:opacity-60 disabled:cursor-not-allowed`}
+                            className={`size-8 2xl:size-auto 2xl:px-3 2xl:py-1.5 2xl:gap-1.5 flex items-center justify-center text-[11px] font-bold border rounded-lg transition-all shadow-sm whitespace-nowrap ${p.dynamicDataFetched ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10" : "border-border bg-card hover:bg-secondary hover:border-brass/50 text-muted-foreground hover:text-brass"} disabled:opacity-60 disabled:cursor-not-allowed`}
                           >
                             {dynDataMut.isPending && dynFetchingId === pid ? <Loader2 className="size-3.5 animate-spin" /> : <Database className="size-3.5" strokeWidth={2} />}
-                            {dynDataMut.isPending && dynFetchingId === pid ? "Fetching…" : "Get Product Dynamic Data"}
+                            <span className="hidden 2xl:inline">
+                              {dynDataMut.isPending && dynFetchingId === pid ? "Fetching…" : "Get Product Dynamic Data"}
+                            </span>
                           </button>
                           <button
                             onClick={() => visibilityMut.mutate({ id: pid, hidden: !isHidden })}
