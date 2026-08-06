@@ -80,19 +80,21 @@ function HeaderSearch() {
   return (
     <div ref={wrapRef} className="relative flex-1 min-w-0 max-w-2xl">
       <form onSubmit={submit} className="flex min-w-0">
-        <input
-          value={q}
-          onChange={(e) => { setQ(e.target.value); setOpen(true); }}
-          onFocus={() => setOpen(true)}
-          placeholder="Search products, brands, categories…"
-          className="w-full min-w-0 h-11 pl-3 sm:pl-5 pr-2 sm:pr-4 border-2 border-coal/20 bg-paper focus:border-coal outline-none text-xs sm:text-sm transition-colors placeholder:text-coal/40"
-        />
-        {q && (
-          <button type="button" onClick={() => { setQ(""); setOpen(false); }}
-             className="absolute right-[56px] sm:right-[88px] top-1/2 -translate-y-1/2 p-2 text-coal/40 hover:text-coal transition">
-            <X className="size-3.5" strokeWidth={1.5} />
-          </button>
-        )}
+        <div className="relative flex-1 min-w-0">
+          <input
+            value={q}
+            onChange={(e) => { setQ(e.target.value); setOpen(true); }}
+            onFocus={() => setOpen(true)}
+            placeholder="Search products, brands, categories…"
+            className="w-full min-w-0 h-11 pl-3 sm:pl-5 pr-9 sm:pr-10 border-2 border-coal/20 bg-paper focus:border-coal outline-none text-xs sm:text-sm transition-colors placeholder:text-coal/40"
+          />
+          {q && (
+            <button type="button" onClick={() => { setQ(""); setOpen(false); }}
+               className="absolute right-1.5 sm:right-2 top-1/2 -translate-y-1/2 p-2 text-coal/40 hover:text-coal transition">
+              <X className="size-3.5" strokeWidth={1.5} />
+            </button>
+          )}
+        </div>
         <button type="submit"
            className="shrink-0 h-11 px-3 sm:px-6 bg-coal text-bone eyebrow text-xs hover:bg-brass hover:text-coal transition-colors duration-300">
            <Search className="size-4 sm:hidden" strokeWidth={1.5} />
@@ -107,9 +109,9 @@ function HeaderSearch() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.18 }}
-            className="absolute top-full left-0 right-0 z-50 bg-bone border border-coal/15 shadow-xl mt-0.5"
+            className="absolute top-full left-0 right-0 z-50 bg-bone border border-coal/15 shadow-xl mt-0.5 max-h-[min(420px,65vh)] overflow-y-auto"
           >
-            <div className="p-4 grid sm:grid-cols-2 gap-5">
+            <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-5">
               {data?.queries && data.queries.length > 0 && (
                 <div>
                   <p className="eyebrow text-coal/40 text-[10px] mb-2">Suggestions</p>
@@ -140,7 +142,7 @@ function HeaderSearch() {
                             : <div className="size-8 bg-paper shrink-0" />}
                           <div className="min-w-0">
                             <p className="text-xs font-medium truncate">{p.name}</p>
-                            <p className="eyebrow text-coal/40 text-[10px]">
+                            <p className="eyebrow text-coal/40 text-[10px] truncate">
                               Rs {Number(p.price).toLocaleString()}
                             </p>
                           </div>
