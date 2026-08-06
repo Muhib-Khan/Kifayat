@@ -616,7 +616,7 @@ const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user._id })
       .sort({ createdAt: -1 })
-      .populate("items.product", "name imageUrl retailPrice");
+      .populate("items.product", "name imageUrl retailPrice lowPrice");
 
     const shippingDetails = await ShippingDetail.find({ user: req.user._id });
     const shippingMap = {};
@@ -646,7 +646,7 @@ const getAllOrders = async (req, res) => {
         .skip(skip)
         .limit(limit)
         .populate("user", "name email")
-        .populate("items.product", "name imageUrl retailPrice"),
+        .populate("items.product", "name imageUrl retailPrice lowPrice"),
       Order.countDocuments({}),
       ShippingDetail.find({}).lean(),
     ]);

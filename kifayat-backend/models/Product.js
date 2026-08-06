@@ -9,6 +9,8 @@ const productSchema = new mongoose.Schema(
     description: { type: String, default: "", trim: true },
     wholesalePrice: { type: Number, default: 0, min: 0 },
     retailPrice: { type: Number, default: 0, min: 0 },
+    // Persisted exemption: low-price products get flat +270 and never a % margin
+    lowPrice: { type: Boolean, default: false },
     stock: { type: Number, default: 0, min: 0 },
     originalStock: { type: Number, default: 0, min: 0 },
     category: { type: String, default: "Uncategorized", trim: true },
@@ -44,6 +46,7 @@ productSchema.methods.toPublicObject = function () {
   delete obj.wholesalePrice;
   delete obj.uploadBatch;
   delete obj.__v;
+  obj.lowPrice = this.lowPrice === true;
   return obj;
 };
 

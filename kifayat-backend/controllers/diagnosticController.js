@@ -5,6 +5,7 @@ const User = require("../models/User");
 const { v4: uuidv4 } = require("uuid");
 const { logActivity } = require("../utils/activityLogger");
 const { sendMail } = require("../utils/email");
+const { computeRetail } = require("../utils/pricing");
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -227,12 +228,14 @@ const applyGlobalPricing = async (diagnosticId) => {
     for (const issue of diagnostic.issues) {
       if (issue.status !== "pending") continue;
       const wholesale = issue.wholesalePrice || 0;
-      const newRetail = Math.round(wholesale * (1 + globalPct / 100));
+      const priced = computeRetail(wholesale, globalPct, false);
+      if (!priced) continue; // wholesale <= 0 — cannot price, leave issue pending
       await Product.findByIdAndUpdate(issue.productId, {
-        retailPrice: newRetail,
+        retailPrice: priced.retail,
+        lowPrice: priced.lowPrice,
       });
       issue.status = "fixed";
-      issue.retailPrice = newRetail;
+      issue.retailPrice = priced.retail;
       applied++;
     }
 

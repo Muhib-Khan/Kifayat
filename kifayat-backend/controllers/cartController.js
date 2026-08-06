@@ -151,6 +151,7 @@ const validateCart = async (req, res) => {
         available,
         inStock,
         currentPrice: product.retailPrice ?? 0,
+        lowPrice: product.lowPrice === true,
       });
     }
 

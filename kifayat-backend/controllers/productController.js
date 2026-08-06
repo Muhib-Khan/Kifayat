@@ -15,6 +15,7 @@ const { scheduleDeletion, cancelDeletion } = require("../utils/outOfStockManager
 const { resetReminderState } = require("../utils/activeUserMonitor");
 const { optimizeProductCopy } = require("../utils/groqProductOptimizer");
 const groqKeyPool = require("../utils/groqKeyPool");
+const { computeRetail } = require("../utils/pricing");
 
 // ── Keyword map: slug → name fragments to match against product names ─────────
 // Used by the category filter in getProducts. Kept in sync with utils/categorize.js.
@@ -379,9 +380,17 @@ const uploadCSV = async (req, res) => {
         // Apply pricing: category % has priority, fallback to global %, else keep imported price
         const catPct = catPricing[p.category];
         if (catPct && p.wholesalePrice > 0) {
-          p.retailPrice = Math.round(p.wholesalePrice * (1 + catPct / 100));
+          const priced = computeRetail(p.wholesalePrice, catPct, false);
+          if (priced) {
+            p.retailPrice = priced.retail;
+            p.lowPrice = priced.lowPrice;
+          }
         } else if (globalPricing && p.wholesalePrice > 0) {
-          p.retailPrice = Math.round(p.wholesalePrice * (1 + globalPricing / 100));
+          const priced = computeRetail(p.wholesalePrice, globalPricing, false);
+          if (priced) {
+            p.retailPrice = priced.retail;
+            p.lowPrice = priced.lowPrice;
+          }
         }
         if (p.stock > 0) p.stockOutAt = null;
         p.slug = slugify(p.name) || slugify(p.sku) || p._id;
@@ -929,8 +938,9 @@ const getProductById = async (req, res) => {
             (v?.salePrice ?? v?.price ?? v?.wholesalePrice ?? v?.retailPrice),
           );
           if (!base || base <= 0) return v;
-          const retail = Math.round(base * (1 + pct / 100));
-          return { ...v, price: retail, salePrice: retail, retailPrice: retail };
+          const priced = computeRetail(base, pct, false);
+          if (!priced) return v;
+          return { ...v, price: priced.retail, salePrice: priced.retail, retailPrice: priced.retail };
         });
       }
     } catch (err) {
@@ -1065,7 +1075,11 @@ const updateProduct = async (req, res) => {
           : {};
         const pct = catPricing[updates.category];
         if (pct && (updates.wholesalePrice || 0) > 0) {
-          updates.retailPrice = Math.round((updates.wholesalePrice || 0) * (1 + pct / 100));
+          const priced = computeRetail(updates.wholesalePrice || 0, pct, false);
+          if (priced) {
+            updates.retailPrice = priced.retail;
+            updates.lowPrice = priced.lowPrice;
+          }
         }
       }
     }
@@ -1178,12 +1192,14 @@ const updatePricingByCategory = async (req, res) => {
     for (const product of products) {
       const wholesale = product.wholesalePrice;
       if (!wholesale || wholesale <= 0) { skipped++; continue; } // no cost data — never zero out retail
-      const newRetail = Math.round(wholesale * (1 + pct / 100));
-      if (newRetail !== product.retailPrice) {
+      const priced = computeRetail(wholesale, pct, product.lowPrice === true);
+      if (!priced) { skipped++; continue; }
+      const newRetail = priced.retail;
+      if (newRetail !== product.retailPrice || priced.lowPrice !== (product.lowPrice === true)) {
         ops.push({
           updateOne: {
             filter: { _id: product._id },
-            update: { $set: { retailPrice: newRetail } },
+            update: { $set: { retailPrice: newRetail, lowPrice: priced.lowPrice } },
           },
         });
       }
@@ -1378,12 +1394,14 @@ const updatePricingAll = async (req, res) => {
     for (const product of products) {
       const wholesale = product.wholesalePrice;
       if (!wholesale || wholesale <= 0) { skipped++; continue; } // no cost data — never zero out retail
-      const newRetail = Math.round(wholesale * (1 + pct / 100));
-      if (newRetail !== product.retailPrice) {
+      const priced = computeRetail(wholesale, pct, product.lowPrice === true);
+      if (!priced) { skipped++; continue; }
+      const newRetail = priced.retail;
+      if (newRetail !== product.retailPrice || priced.lowPrice !== (product.lowPrice === true)) {
         ops.push({
           updateOne: {
             filter: { _id: product._id },
-            update: { $set: { retailPrice: newRetail } },
+            update: { $set: { retailPrice: newRetail, lowPrice: priced.lowPrice } },
           },
         });
       }

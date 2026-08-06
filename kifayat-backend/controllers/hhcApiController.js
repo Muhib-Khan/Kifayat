@@ -4,6 +4,7 @@ const Product = require("../models/Product");
 const Settings = require("../models/Settings");
 const { deleteAllOutOfStock } = require("../utils/outOfStockManager");
 const { categorizeProduct } = require("../utils/categorize");
+const { computeRetail } = require("../utils/pricing");
 
 const agent = new https.Agent({ keepAlive: true, timeout: 30000, maxSockets: 5 });
 
@@ -631,12 +632,14 @@ const quickFetch = async (req, res) => {
         const allProducts = await Product.find({ wholesalePrice: { $gt: 0 } });
         const ops = [];
         for (const product of allProducts) {
-          const newRetail = Math.round(product.wholesalePrice * (1 + pct / 100));
-          if (newRetail !== product.retailPrice) {
+          const priced = computeRetail(product.wholesalePrice, pct, product.lowPrice === true);
+          if (!priced) continue;
+          const newRetail = priced.retail;
+          if (newRetail !== product.retailPrice || priced.lowPrice !== (product.lowPrice === true)) {
             ops.push({
               updateOne: {
                 filter: { _id: product._id },
-                update: { $set: { retailPrice: newRetail } },
+                update: { $set: { retailPrice: newRetail, lowPrice: priced.lowPrice } },
               },
             });
           }
@@ -954,12 +957,14 @@ const syncAll = async (req, res) => {
         const allProducts = await Product.find({ wholesalePrice: { $gt: 0 } });
         const ops = [];
         for (const product of allProducts) {
-          const newRetail = Math.round(product.wholesalePrice * (1 + pct / 100));
-          if (newRetail !== product.retailPrice) {
+          const priced = computeRetail(product.wholesalePrice, pct, product.lowPrice === true);
+          if (!priced) continue;
+          const newRetail = priced.retail;
+          if (newRetail !== product.retailPrice || priced.lowPrice !== (product.lowPrice === true)) {
             ops.push({
               updateOne: {
                 filter: { _id: product._id },
-                update: { $set: { retailPrice: newRetail } },
+                update: { $set: { retailPrice: newRetail, lowPrice: priced.lowPrice } },
               },
             });
           }
