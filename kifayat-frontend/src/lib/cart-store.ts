@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 
 export type CartItem = {
   product_id: string | null;
@@ -217,9 +218,29 @@ export function useCart() {
   return s;
 }
 
-export function cartTotals(arr: CartItem[], freeDelivery = false) {
+/** Flat delivery fee on every order — fallback default until the admin-editable value loads. */
+export const FLAT_DELIVERY_FEE = 100;
+
+/** Public settings endpoint the backend exposes for the admin-editable delivery fee. */
+const PUBLIC_SETTINGS_PATH = "/settings/public";
+
+/**
+ * Fetch the admin-editable delivery fee from the public settings endpoint.
+ * Returns FLAT_DELIVERY_FEE on any failure (offline, endpoint missing, bad payload).
+ */
+export async function fetchDeliveryFee(): Promise<number> {
+  try {
+    const data = await api.get<{ success?: boolean; deliveryFee?: unknown }>(PUBLIC_SETTINGS_PATH);
+    const fee = Number(data?.deliveryFee);
+    return Number.isFinite(fee) && fee >= 0 ? fee : FLAT_DELIVERY_FEE;
+  } catch {
+    return FLAT_DELIVERY_FEE;
+  }
+}
+
+export function cartTotals(arr: CartItem[], deliveryFee: number = FLAT_DELIVERY_FEE) {
   const subtotal = arr.reduce((s, i) => s + i.price * i.qty, 0);
-  const shipping = arr.length === 0 ? 0 : freeDelivery || subtotal >= 2500 ? 0 : 200;
+  const shipping = arr.length === 0 ? 0 : Math.max(0, Number(deliveryFee) || FLAT_DELIVERY_FEE);
   const total = subtotal + shipping;
   const count = arr.reduce((s, i) => s + i.qty, 0);
   return { subtotal, shipping, total, count };

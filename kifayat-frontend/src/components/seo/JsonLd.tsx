@@ -23,7 +23,7 @@ export function WebSiteSchema() {
         name: SITE_NAME,
         url: SITE_URL,
         description:
-          "Pakistan's trusted online store for quality electronics, fashion, home goods and more. Free delivery over Rs 2,500.",
+          "Pakistan's trusted online store for quality electronics, fashion, home goods and more. Flat delivery — Cheapest Delivery in Pakistan.",
         inLanguage: "en-PK",
         publisher: {
           "@id": `${SITE_URL}/#organization`,
@@ -110,7 +110,7 @@ export function HomepageGraphSchema() {
             name: SITE_NAME,
             url: SITE_URL,
             description:
-              "Pakistan's trusted online store for quality electronics, fashion, home goods and more. Free delivery over Rs 2,500.",
+              "Pakistan's trusted online store for quality electronics, fashion, home goods and more. Flat delivery — Cheapest Delivery in Pakistan.",
             inLanguage: "en-PK",
             publisher: { "@id": `${SITE_URL}/#organization` },
             potentialAction: {
@@ -234,7 +234,7 @@ export function ProductSchema({
         "@type": "OfferShippingDetails",
         shippingRate: {
           "@type": "MonetaryAmount",
-          value: product.price >= 2500 ? 0 : 200,
+          value: 100,
           currency: "PKR",
         },
         shippingDestination: {
@@ -549,7 +549,7 @@ export function LocalBusinessSchema() {
         url: SITE_URL,
         image: `${SITE_URL}/og-default.jpg`,
         description:
-          "Pakistan's trusted online store for quality products. Free delivery over Rs 2,500.",
+          "Pakistan's trusted online store for quality products. Flat delivery — Cheapest Delivery in Pakistan.",
         openingHoursSpecification: [
           {
             "@type": "OpeningHoursSpecification",

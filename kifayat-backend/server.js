@@ -595,6 +595,8 @@ app.use("/api/admin/ai",       require("./routes/aiRoutes"));
 app.use("/api/workflow", require("./routes/orderWorkflowRoutes"));
 app.use("/api/defective-products", require("./routes/defectiveProductRoutes"));
 app.use("/api/vouchers", require("./routes/voucherRoutes"));
+// Public settings (no auth) — storefront reads the flat delivery fee here
+app.use("/api/settings", require("./routes/publicSettingsRoutes"));
 
 // ---------------------------------------------------------------------------
 // 404 handler

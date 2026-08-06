@@ -6,8 +6,7 @@ import {
 } from "lucide-react";
 import { uiStore } from "@/lib/ui-store";
 import { useAuth, signOut } from "@/lib/auth-store";
-import { useCart, cartTotals } from "@/lib/cart-store";
-import { isFirstOrderFreeEligible } from "@/lib/first-order-free";
+import { useCart, cartTotals, FLAT_DELIVERY_FEE, fetchDeliveryFee } from "@/lib/cart-store";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { searchSuggest } from "@/lib/search.functions";
@@ -178,7 +177,7 @@ function AccountDropdown() {
   return (
     <div ref={ref} className="relative">
       <button onClick={() => setOpen((o) => !o)} aria-label="Account"
-        className="flex flex-col items-center gap-0.5 p-1 hover:text-brass transition-colors group">
+        className="flex flex-col items-center gap-0.5 p-2.5 -m-1 hover:text-brass transition-colors group">
         <User className="size-5" strokeWidth={1.2} />
         <span className="eyebrow text-[9px] hidden sm:block text-coal/60 group-hover:text-brass transition-colors">
           {user ? "Account" : "Sign In"}
@@ -280,7 +279,18 @@ export function Header() {
   const items       = useCart();
   const { count }   = cartTotals(items);
   const { user }    = useAuth();
-  const firstOrderFree = isFirstOrderFreeEligible(user?.totalOrdersCount);
+
+  // ── Admin-editable delivery fee (falls back to FLAT_DELIVERY_FEE) ─────────
+  const [deliveryFee, setDeliveryFee] = useState<number>(FLAT_DELIVERY_FEE);
+  useEffect(() => {
+    let alive = true;
+    fetchDeliveryFee().then((fee) => {
+      if (alive) setDeliveryFee(fee);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   // ── Auto-hide on scroll down, reveal on scroll up ──────────────────────────
   const [hidden, setHidden]   = useState(false);
@@ -318,12 +328,10 @@ export function Header() {
       <div className="bg-coal text-bone">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-8 h-9 flex items-center justify-between eyebrow text-[11px]">
           <span className="hidden sm:inline opacity-75">
-            {firstOrderFree
-              ? "🎉 Free delivery on your FIRST order — no code needed"
-              : "Pakistan-wide dispatch · Free delivery over Rs 2,500"}
+            Rs {deliveryFee} delivery — Cheapest Delivery in Pakistan
           </span>
           <span className="sm:hidden opacity-75">
-            {firstOrderFree ? "🎉 First order ships FREE" : "Free delivery over Rs 2,500"}
+            Cheapest Delivery in Pakistan
           </span>
           <div className="flex items-center gap-5 opacity-75">
             <span className="hidden sm:inline">COD available · PKR</span>
@@ -359,7 +367,7 @@ export function Header() {
           <div className="flex items-center gap-3 lg:gap-4 shrink-0">
             <AccountDropdown />
             <Link to="/cart" aria-label="Cart" data-cart-icon
-              className="flex flex-col items-center gap-0.5 p-1 relative hover:text-brass transition-colors group">
+              className="flex flex-col items-center gap-0.5 p-2.5 -m-1 relative hover:text-brass transition-colors group">
               <ShoppingBag className="size-5" strokeWidth={1.2} />
               <span className="eyebrow text-[9px] hidden sm:block text-coal/60 group-hover:text-brass transition-colors">
                 Cart

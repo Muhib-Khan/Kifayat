@@ -4,7 +4,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { refreshAuth } from "@/lib/auth-store";
-import { firstOrderFreeToast } from "@/lib/first-order-free";
 import { firebaseConfigured, signInWithGoogle } from "@/lib/firebase";
 import { GoogleLogo } from "@/components/GoogleLogo";
 
@@ -24,7 +23,6 @@ function Login() {
       const { idToken } = await signInWithGoogle();
       const loginRes = await api.post<{ success: boolean; user: any }>("/auth/google", { idToken });
       await refreshAuth();
-      firstOrderFreeToast(loginRes?.user?.totalOrdersCount);
       toast.success("Welcome back.");
       navigate({ to: loginRes?.user?.role === "admin" ? "/admin" : "/account" });
     } catch (err: any) {

@@ -36,7 +36,36 @@ const getAdminSettings = async (req, res) => {
       preview:    keys.length > 0 ? null : maskKey(legacyRaw),
     };
 
-    res.json({ success: true, settings: { groqKeys: keys, groqKey } });
+    res.json({
+      success: true,
+      settings: {
+        groqKeys: keys,
+        groqKey,
+        deliveryFee: Number.isFinite(Number(s?.deliveryFee)) ? Number(s.deliveryFee) : 100,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// ─── PUT /api/admin/settings/delivery-fee — set the flat delivery fee ────────
+const updateDeliveryFee = async (req, res) => {
+  try {
+    const { deliveryFee } = req.body;
+    if (deliveryFee === undefined || deliveryFee === null) {
+      return res.status(400).json({ success: false, message: "deliveryFee is required." });
+    }
+    const fee = Number(deliveryFee);
+    if (!Number.isFinite(fee) || fee < 0) {
+      return res.status(400).json({ success: false, message: "deliveryFee must be a non-negative number." });
+    }
+    const s = await Settings.findOneAndUpdate(
+      {},
+      { $set: { deliveryFee: fee } },
+      { upsert: true, new: true }
+    );
+    res.json({ success: true, message: "Delivery fee saved.", deliveryFee: s.deliveryFee });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -156,6 +185,7 @@ module.exports = {
   updateGroqKeyById,
   deleteGroqKeyById,
   testGroqKeyById,
+  updateDeliveryFee,
   // legacy
   updateGroqKey,
   deleteGroqKey,

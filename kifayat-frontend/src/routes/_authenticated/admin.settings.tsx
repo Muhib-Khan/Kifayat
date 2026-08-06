@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { FLAT_DELIVERY_FEE } from "@/lib/cart-store";
 import {
   CheckCircle2, ChevronDown, FlaskConical, Key,
-  Loader2, Plus, Save, Trash2, XCircle, Zap,
+  Loader2, Plus, Save, Trash2, Truck, XCircle, Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   adminGetSettings,
@@ -13,6 +14,7 @@ import {
   adminUpdateGroqKey,
   adminDeleteGroqKeyById,
   adminTestGroqKeyById,
+  adminUpdateDeliveryFee,
 } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
@@ -285,6 +287,25 @@ function SettingsPage() {
   const keys: any[] = data?.settings?.groqKeys ?? [];
   const [, forceUpdate] = useState(0);
 
+  // ── Delivery fee (admin-editable, shown across the storefront) ───────────
+  const [feeInput, setFeeInput] = useState<string>(String(FLAT_DELIVERY_FEE));
+  useEffect(() => {
+    const fee = data?.settings?.deliveryFee;
+    if (fee != null) setFeeInput(String(fee));
+  }, [data]);
+
+  const feeNumber = Number(feeInput);
+  const feeValid = feeInput.trim() !== "" && Number.isFinite(feeNumber) && feeNumber >= 0;
+
+  const saveFeeMut = useMutation({
+    mutationFn: () => adminUpdateDeliveryFee(feeNumber),
+    onSuccess: () => {
+      toast.success("Delivery fee updated.");
+      qc.invalidateQueries({ queryKey: ["admin-settings"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Save failed."),
+  });
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -343,6 +364,45 @@ function SettingsPage() {
           )}
 
           <AddKeyForm onAdded={() => forceUpdate((n) => n + 1)} />
+        </div>
+      </div>
+
+      {/* Delivery fee card */}
+      <div className="border border-border rounded-xl overflow-hidden">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-secondary/30">
+          <Truck className="size-4 text-brass shrink-0" strokeWidth={1.5} />
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-sm">Delivery Fee</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Flat fee charged on every order — shown across the storefront (banner, cart, checkout and product pages).
+            </p>
+          </div>
+        </div>
+
+        <div className="px-6 py-6 space-y-4">
+          <div className="space-y-1.5 max-w-xs">
+            <label className="text-xs font-medium text-muted-foreground">Delivery Fee (Rs)</label>
+            <input
+              type="number"
+              min={0}
+              step={1}
+              value={feeInput}
+              onChange={(e) => setFeeInput(e.target.value)}
+              placeholder="100"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brass/30 focus:border-brass transition"
+            />
+            <p className="text-xs text-muted-foreground">
+              Storefront default: Rs 100 — updates instantly for all visitors once saved.
+            </p>
+          </div>
+          <button
+            onClick={() => saveFeeMut.mutate()}
+            disabled={!feeValid || saveFeeMut.isPending}
+            className="inline-flex items-center gap-2 bg-coal text-bone px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-brass hover:text-coal transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {saveFeeMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" strokeWidth={1.5} />}
+            Save delivery fee
+          </button>
         </div>
       </div>
 

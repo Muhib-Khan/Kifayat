@@ -36,6 +36,9 @@ const settingsSchema = new mongoose.Schema(
     // Incremented once per product line assigned a KO-XXXXXXXX id at download
     // time, so consecutive exports continue from the last assigned id.
     mainCSVCustomOrderId: { type: Number, default: 0 },
+    // Flat delivery fee charged on every order (admin-editable; storefront
+    // reads it via GET /api/settings/public)
+    deliveryFee: { type: Number, default: 100, min: 0 },
   },
   { timestamps: true, collection: "settings" }
 );

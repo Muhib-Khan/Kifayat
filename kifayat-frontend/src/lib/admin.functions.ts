@@ -548,6 +548,11 @@ export async function adminGetSettings(): Promise<any> {
   return api.get<any>("/admin/settings");
 }
 
+// Storefront delivery fee — exposed publicly via /settings/public, editable here
+export async function adminUpdateDeliveryFee(deliveryFee: number): Promise<any> {
+  return api.put<any>("/admin/settings/delivery-fee", { deliveryFee });
+}
+
 // Multi-key endpoints
 export async function adminAddGroqKey(payload: { key: string; label: string; task: string }): Promise<any> {
   return api.post<any>("/admin/settings/groq-keys", payload);

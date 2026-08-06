@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
 import { refreshAuth, useAuth } from "@/lib/auth-store";
-import { firstOrderFreeToast } from "@/lib/first-order-free";
 import { firebaseConfigured, signInWithGoogle } from "@/lib/firebase";
 import { GoogleLogo } from "@/components/GoogleLogo";
 import imgEditorial from "@/assets/editorial-hero.jpg";
@@ -321,7 +320,6 @@ function AuthPage() {
         toast.success("Email verified! Signing you in…");
         const loginRes = await api.post<{ success: boolean; user: any }>("/auth/login", { email, password });
         await refreshAuth();
-        firstOrderFreeToast(loginRes?.user?.totalOrdersCount);
         navigate({ to: loginRes?.user?.role === "admin" ? "/admin" : "/account" });
       } else if (mode === "forgot") {
         if (resetStep === "email") {
@@ -336,7 +334,6 @@ function AuthPage() {
       } else {
         const loginRes = await api.post<{ success: boolean; user: any }>("/auth/login", { email, password });
         await refreshAuth();
-        firstOrderFreeToast(loginRes?.user?.totalOrdersCount);
         toast.success("Welcome back.");
         navigate({ to: loginRes?.user?.role === "admin" ? "/admin" : "/account" });
       }
@@ -371,7 +368,6 @@ function AuthPage() {
         { idToken },
       );
       await refreshAuth();
-      firstOrderFreeToast(loginRes?.user?.totalOrdersCount);
       toast.success("Welcome back.");
       navigate({ to: loginRes?.user?.role === "admin" ? "/admin" : "/account" });
     } catch (err: any) {

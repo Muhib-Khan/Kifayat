@@ -102,7 +102,7 @@ function ProductsPage() {
     <PageShell>
       <SEO
         title="All Products — Electronics, Fashion, Home Goods & More"
-        description="Browse Kifayat's full catalogue of quality products. Electronics, fashion, home goods, beauty, sports and more — with free delivery over Rs 2,500 across Pakistan."
+        description="Browse Kifayat's full catalogue of quality products. Electronics, fashion, home goods, beauty, sports and more — with flat delivery across Pakistan, the cheapest delivery in Pakistan."
         path="/products"
         keywords="online shopping Pakistan, electronics Pakistan, fashion Pakistan, home goods online, buy online Pakistan"
       />
@@ -124,7 +124,7 @@ function ProductsPage() {
         <div className="flex gap-8 items-start">
 
           {/* Desktop sidebar */}
-          <aside className="hidden lg:block w-52 shrink-0 sticky top-[176px] space-y-8">
+          <aside className="hidden lg:block w-52 shrink-0 sticky top-[200px] space-y-8">
             <div>
               <p className="eyebrow text-coal/40 text-xs mb-3">Sort by</p>
               <ul className="space-y-1">
@@ -188,7 +188,7 @@ function ProductsPage() {
             <div className="flex items-center gap-3 mb-5 lg:hidden">
               <button
                 onClick={() => setFiltersOpen((v) => !v)}
-                className="inline-flex items-center gap-2 eyebrow text-xs border border-coal/20 px-3 py-2 hover:border-coal transition"
+                className="inline-flex items-center gap-2 eyebrow text-xs border border-coal/20 px-3 py-2 min-h-9 hover:border-coal transition"
               >
                 <SlidersHorizontal className="size-3.5" strokeWidth={1.5} />
                 Filters
@@ -198,7 +198,7 @@ function ProductsPage() {
                   <button
                     key={s.value}
                     onClick={() => setSort(s.value)}
-                    className={`shrink-0 eyebrow text-xs px-3 py-2 border transition ${
+                    className={`shrink-0 eyebrow text-xs px-3 py-2 min-h-9 border transition ${
                       sort === s.value ? "border-coal bg-coal text-bone" : "border-coal/15 text-coal/60 hover:border-coal"
                     }`}
                   >
@@ -285,9 +285,9 @@ function ProductsPage() {
                 </div>
               )
             ) : isLoading ? (
-              <ProductGridSkeleton count={9} columns="grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-6" />
+              <ProductGridSkeleton count={9} columns="grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-6" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-6">
                 {products.map((p, i) => (
                   <ProductCard
                     key={p.id}

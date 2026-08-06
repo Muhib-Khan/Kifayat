@@ -135,7 +135,7 @@ function SearchPage() {
                 <button
                   key={val}
                   onClick={() => updateSearch({ sort: val })}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition ${
+                  className={`px-3 py-1.5 min-h-9 text-xs font-medium rounded-md border transition whitespace-nowrap ${
                     search.sort === val
                       ? "bg-foreground text-background border-foreground"
                       : "border-border text-muted-foreground hover:border-foreground/30 hover:text-foreground"
@@ -147,7 +147,7 @@ function SearchPage() {
               {(search.brand || search.min_price || search.max_price || search.min_rating) && (
                 <button
                   onClick={() => updateSearch({ brand: "", min_price: undefined, max_price: undefined, min_rating: undefined })}
-                  className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-md border border-destructive text-destructive hover:bg-destructive/10 transition"
+                  className="flex items-center gap-1 px-3 py-1.5 min-h-9 text-xs font-medium rounded-md border border-destructive text-destructive hover:bg-destructive/10 transition whitespace-nowrap"
                 >
                   <X className="size-3" /> Clear filters
                 </button>
@@ -223,7 +223,7 @@ function SearchPage() {
             <button
               onClick={() => updateSearch({ page: search.page - 1 })}
               disabled={search.page <= 1}
-              className="px-4 py-2 text-sm font-medium border border-border rounded-md hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="px-4 py-2 min-h-9 text-sm font-medium border border-border rounded-md hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               ← Prev
             </button>
@@ -233,7 +233,7 @@ function SearchPage() {
             <button
               onClick={() => updateSearch({ page: search.page + 1 })}
               disabled={search.page >= totalPages}
-              className="px-4 py-2 text-sm font-medium border border-border rounded-md hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className="px-4 py-2 min-h-9 text-sm font-medium border border-border rounded-md hover:bg-secondary disabled:opacity-40 disabled:cursor-not-allowed transition"
             >
               Next →
             </button>

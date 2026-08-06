@@ -8,6 +8,7 @@ const {
   updateGroqKeyById,
   deleteGroqKeyById,
   testGroqKeyById,
+  updateDeliveryFee,
   // legacy
   updateGroqKey,
   deleteGroqKey,
@@ -17,6 +18,7 @@ const {
 router.use(protect, requireAdmin);
 
 router.get("/", getAdminSettings);
+router.put("/delivery-fee", updateDeliveryFee);
 
 // ── Multi-key endpoints ───────────────────────────────────────────────────────
 router.post("/groq-keys",          addGroqKey);

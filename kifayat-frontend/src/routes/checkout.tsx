@@ -1,9 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { PageShell } from "@/components/landing/PageShell";
 import { useState, useEffect, useRef } from "react";
-import { useCart, cart, cartTotals, refreshCartPrices, validateCartStock } from "@/lib/cart-store";
+import { useCart, cart, cartTotals, refreshCartPrices, validateCartStock, FLAT_DELIVERY_FEE, fetchDeliveryFee } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-store";
-import { isFirstOrderFreeEligible, markFirstOrderFreeUsed } from "@/lib/first-order-free";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
 import LocationPicker from "@/components/LocationPicker";
@@ -287,6 +286,18 @@ function Checkout() {
   });
   const [busy, setBusy] = useState(false);
   const [confirmed, setConfirmed] = useState<{ order_number: string; total: number } | null>(null);
+  const [deliveryFee, setDeliveryFee] = useState<number>(FLAT_DELIVERY_FEE);
+
+  // Load the admin-editable delivery fee once on mount
+  useEffect(() => {
+    let alive = true;
+    fetchDeliveryFee().then((fee) => {
+      if (alive) setDeliveryFee(fee);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   // Redirect if not logged in
   useEffect(() => {
@@ -339,8 +350,7 @@ function Checkout() {
     };
   }, []);
 
-  const freeDelivery = isFirstOrderFreeEligible(user?.totalOrdersCount);
-  const totals = cartTotals(items, freeDelivery);
+  const totals = cartTotals(items, deliveryFee);
   const set = (key: keyof ShipmentForm) => (v: string) =>
     setForm((f) => ({ ...f, [key]: v }));
 
@@ -416,7 +426,6 @@ function Checkout() {
 
       placedRef.current = true;
       cart.clear();
-      markFirstOrderFreeUsed();
       showConfirmed(data.order);
       toast.success("Order placed! Check your email to confirm.");
     } catch (e: any) {
@@ -428,7 +437,6 @@ function Checkout() {
         if (existing) {
           placedRef.current = true;
           cart.clear();
-          markFirstOrderFreeUsed();
           showConfirmed(existing);
           toast.success("Order placed! Check your email to confirm.");
           recovered = true;
@@ -657,26 +665,15 @@ function Checkout() {
 
                 {/* Totals */}
                 <div className="border-t border-bone/15 pt-4 space-y-2 text-sm">
-                  {freeDelivery && (
-                    <div className="border border-brass/40 bg-brass/10 px-3 py-2.5 text-xs text-bone">
-                      🎉 Congratulations! Your first order ships <span className="font-semibold text-brass">FREE</span>
-                      {totals.subtotal < 2500 ? " — the Rs 200 delivery fee has been waived." : " — delivery is on us."}
-                    </div>
-                  )}
                   <div className="flex justify-between text-bone/60">
                     <span>Subtotal</span>
                     <span>Rs {totals.subtotal.toLocaleString("en-PK")}</span>
                   </div>
                   <div className="flex justify-between text-bone/60">
                     <span>Shipping</span>
-                    <span>
-                      {freeDelivery
-                        ? "Free · first order 🎉"
-                        : totals.shipping === 0
-                          ? "Free"
-                          : `Rs ${totals.shipping.toLocaleString("en-PK")}`}
-                    </span>
+                    <span>Rs {totals.shipping.toLocaleString("en-PK")}</span>
                   </div>
+                  <p className="text-xs text-bone/50">Cheapest Delivery in Pakistan</p>
                   <div className="flex justify-between font-display font-bold text-base pt-2 border-t border-bone/15 mt-2">
                     <span>Total</span>
                     <span>Rs {totals.total.toLocaleString("en-PK")}</span>

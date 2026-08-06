@@ -107,7 +107,7 @@ function CategoryPage() {
     name: p.name,
     url: `${SITE_URL}/products/${p.id}`,
   }));
-  const categoryDesc = `Shop ${categoryName} online in Pakistan at Kifayat. Quality ${categoryName.toLowerCase()} products with fast delivery all across Pakistan and free shipping on orders over Rs\u00a02,500.`;
+  const categoryDesc = `Shop ${categoryName} online in Pakistan at Kifayat. Quality ${categoryName.toLowerCase()} products with fast delivery all across Pakistan and flat delivery — the cheapest delivery in Pakistan.`;
 
   return (
     <PageShell>
@@ -156,7 +156,7 @@ function CategoryPage() {
         <div className="flex gap-8 items-start">
 
           {/* Desktop sidebar */}
-          <aside className="hidden lg:block w-52 shrink-0 sticky top-[176px] space-y-8">
+          <aside className="hidden lg:block w-52 shrink-0 sticky top-[200px] space-y-8">
             <div>
               <p className="eyebrow text-coal/40 text-xs mb-3">Sort by</p>
               <ul className="space-y-1">
@@ -220,7 +220,7 @@ function CategoryPage() {
             <div className="flex items-center gap-3 mb-5 lg:hidden">
               <button
                 onClick={() => setFiltersOpen((v) => !v)}
-                className="inline-flex items-center gap-2 eyebrow text-xs border border-coal/20 px-3 py-2 hover:border-coal transition"
+                className="inline-flex items-center gap-2 eyebrow text-xs border border-coal/20 px-3 py-2 min-h-9 hover:border-coal transition"
               >
                 <SlidersHorizontal className="size-3.5" strokeWidth={1.5} />
                 Filters
@@ -230,7 +230,7 @@ function CategoryPage() {
                   <button
                     key={s.value}
                     onClick={() => setSort(s.value)}
-                    className={`shrink-0 eyebrow text-xs px-3 py-2 border transition ${
+                    className={`shrink-0 eyebrow text-xs px-3 py-2 min-h-9 border transition ${
                       sort === s.value ? "border-coal bg-coal text-bone" : "border-coal/15 text-coal/60 hover:border-coal"
                     }`}
                   >
@@ -317,9 +317,9 @@ function CategoryPage() {
                 </div>
               )
             ) : isLoading ? (
-              <ProductGridSkeleton count={8} columns="grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-5" />
+              <ProductGridSkeleton count={8} columns="grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-5" />
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-5">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-3 sm:gap-5 lg:gap-5">
                 {products.map((p, i) => (
                   <ProductCard
                     key={p.id}

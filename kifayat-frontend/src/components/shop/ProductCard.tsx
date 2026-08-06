@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Heart, ArrowUpRight, Check } from "lucide-react";
 import { isWishlisted, toggleWishlist } from "@/lib/account.functions";
 import { useAuth } from "@/lib/auth-store";
+import { fetchDeliveryFee } from "@/lib/cart-store";
 import { toast } from "sonner";
 
 export type CardProduct = {
@@ -29,6 +30,14 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
     enabled: !!user,
   });
   const wished = !!data?.wishlisted;
+
+  // Shared query key — React Query dedupes concurrent subscribers, so a grid
+  // of 400 cards triggers exactly one /settings/public fetch.
+  const { data: deliveryFee } = useQuery({
+    queryKey: ["deliveryFee"],
+    queryFn: fetchDeliveryFee,
+    staleTime: 5 * 60 * 1000,
+  });
 
   async function toggleWish() {
     if (!user) {
@@ -94,13 +103,13 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
           <button
             aria-label={wished ? "Remove from wishlist" : "Save to wishlist"}
             onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleWish(); }}
-            className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 size-8 sm:size-10 grid place-items-center bg-bone/85 text-coal hover:bg-coal hover:text-bone rounded-full transition
+            className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 size-11 grid place-items-center bg-bone/85 text-coal hover:bg-coal hover:text-bone rounded-full transition
               opacity-100 @[supports(hover:hover)]:opacity-0 @[supports(hover:hover)]:translate-y-2
               group-hover:opacity-100 group-hover:translate-y-0 duration-500
               [@media(hover:none)]:opacity-100 [@media(hover:none)]:translate-y-0
               pointer:opacity-0 pointer:translate-y-2"
           >
-            <Heart className={`size-3.5 sm:size-4 ${wished ? "fill-brass text-brass" : ""}`} strokeWidth={1.4} />
+            <Heart className={`size-4 ${wished ? "fill-brass text-brass" : ""}`} strokeWidth={1.4} />
           </button>
 
           {/* slide-up panel — desktop hover only; hidden on touch so it never
@@ -111,11 +120,14 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
             <div className="px-3.5 py-3 sm:px-5 sm:py-4 flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="eyebrow text-bone/50 mb-1">{p.brand}</p>
-                <p className="font-sans font-semibold text-xs sm:text-sm lg:text-base leading-snug truncate">{title}</p>
+                <p className="font-sans font-semibold text-xs sm:text-sm lg:text-base leading-snug line-clamp-2">{title}</p>
               </div>
               <div className="text-right shrink-0">
                 <p className="font-display text-sm sm:text-lg lg:text-xl text-brass">Rs {p.price.toLocaleString()}</p>
                 {p.oldPrice && <p className="text-[10px] text-bone/40 line-through">Rs {p.oldPrice.toLocaleString()}</p>}
+                {typeof deliveryFee === "number" && (
+                  <p className="mt-1 whitespace-nowrap text-[10px] text-bone/50">Rs {deliveryFee} delivery</p>
+                )}
               </div>
             </div>
             <div className="px-3.5 pb-3 sm:px-5 sm:pb-4 flex items-center justify-between eyebrow text-bone/60">
@@ -133,7 +145,7 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
           <Link
             to="/products/$productId"
             params={{ productId: p.slug }}
-            className="block font-sans font-medium text-xs sm:text-sm lg:text-base leading-snug truncate hover:text-brass transition-colors"
+            className="block font-sans font-medium text-xs sm:text-sm lg:text-base leading-snug line-clamp-2 hover:text-brass transition-colors"
           >
             {title}
           </Link>
@@ -143,6 +155,13 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
           <p className="mt-1 inline-flex items-center gap-1 text-[9px] text-coal/40 whitespace-nowrap">
             <Check className="size-2.5 text-brass" strokeWidth={2} /> COD
           </p>
+          {typeof deliveryFee === "number" && (
+            <p className="mt-1 whitespace-nowrap text-[9px] text-coal/45">
+              Rs {deliveryFee} delivery
+              <span className="mx-1.5 hidden text-coal/25 sm:inline">·</span>
+              <span className="hidden font-medium text-brass sm:inline">Cheapest in Pakistan</span>
+            </p>
+          )}
         </div>
       </div>
     </article>

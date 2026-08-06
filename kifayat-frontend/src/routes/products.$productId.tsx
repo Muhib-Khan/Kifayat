@@ -10,7 +10,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { ZoomImage } from "@/components/shop/ZoomImage";
 import { flyToCart } from "@/components/motion/fly-to-cart-event";
-import { cart, validateCartStock } from "@/lib/cart-store";
+import { cart, validateCartStock, FLAT_DELIVERY_FEE, fetchDeliveryFee } from "@/lib/cart-store";
 import { toast } from "sonner";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getProductById, getSimilarProducts } from "@/lib/shop.functions";
@@ -86,7 +86,7 @@ export const Route = createFileRoute("/products/$productId")({
             <Skeleton className="h-3 w-full" />
             <Skeleton className="h-3 w-2/3" />
           </div>
-          <div className="space-y-4 border border-coal/10 p-5 md:order-2 xl:order-3 md:sticky md:top-24">
+          <div className="space-y-4 border border-coal/10 p-5 md:order-2 xl:order-3 md:sticky md:top-[156px] lg:top-[200px]">
             <Skeleton className="h-6 w-28" />
             <Skeleton className="h-10 w-full" />
             <Skeleton className="h-10 w-full" />
@@ -233,6 +233,16 @@ function ProductPage() {
   const discountPct = product.old_price ? Math.round((savings / product.old_price) * 100) : 0;
   const effInStock = selVar ? variationInStock(selVar) : product.inStock;
   const deliveryDate = getDeliveryEstimate();
+  const [deliveryFee, setDeliveryFee] = useState<number>(FLAT_DELIVERY_FEE);
+  useEffect(() => {
+    let alive = true;
+    fetchDeliveryFee().then((fee) => {
+      if (alive) setDeliveryFee(fee);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
   const bullets = product.description ? parseDescriptionBullets(product.description) : [];
   const visibleBullets = descExpanded ? bullets : bullets.slice(0, 6);
 
@@ -729,7 +739,7 @@ function ProductPage() {
           </div>
 
           {/* ── COL 3: Sticky buy box ── */}
-          <div className="md:sticky md:top-24 md:self-start md:order-2 xl:order-3 space-y-4 order-2">
+          <div className="md:sticky md:top-[156px] lg:top-[200px] md:self-start md:order-2 xl:order-3 space-y-4 order-2">
 
             {/* Price repeat + stock */}
             <div className="border border-coal/15 bg-card p-5 space-y-3">
@@ -824,21 +834,24 @@ function ProductPage() {
               )}
 
               {/* Delivery */}
-              <div className="bg-bone/60 rounded p-3 space-y-2">
-                <div className="flex items-start gap-2.5 text-xs text-coal/70">
-                  <Truck className="size-3.5 text-brass shrink-0 mt-0.5" strokeWidth={1.5} />
-                  <div>
-                    <span className="font-semibold text-coal">FREE delivery</span> over Rs 5,000
-                    <p className="text-coal/50 mt-0.5">Est. arrival: <span className="font-medium text-coal/70">{deliveryDate}</span></p>
+              <div className="bg-bone/60 rounded p-3">
+                <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-x-4 sm:gap-y-2 sm:space-y-0 md:block md:space-y-2">
+                  <div className="flex items-start gap-2.5 text-xs text-coal/70 sm:col-span-2">
+                    <Truck className="size-3.5 text-brass shrink-0 mt-0.5" strokeWidth={1.5} />
+                    <div className="min-w-0">
+                      <span className="font-semibold text-coal">Rs {deliveryFee} delivery</span>
+                      <p className="text-coal/50 mt-0.5">Est. arrival: <span className="font-medium text-coal/70">{deliveryDate}</span></p>
+                      <p className="text-[11px] text-coal/45 mt-0.5">Cheapest Delivery in Pakistan</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-coal/60">
-                  <MapPin className="size-3.5 text-brass shrink-0" strokeWidth={1.5} />
-                  <span>Pakistan-wide delivery</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs text-coal/60">
-                  <Clock className="size-3.5 text-brass shrink-0" strokeWidth={1.5} />
-                  <span>Order by 2 PM for faster dispatch</span>
+                  <div className="flex items-center gap-2.5 text-xs text-coal/60">
+                    <MapPin className="size-3.5 text-brass shrink-0" strokeWidth={1.5} />
+                    <span>Pakistan-wide delivery</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-xs text-coal/60">
+                    <Clock className="size-3.5 text-brass shrink-0" strokeWidth={1.5} />
+                    <span>Order by 2 PM for faster dispatch</span>
+                  </div>
                 </div>
               </div>
 
@@ -848,15 +861,15 @@ function ProductPage() {
                 <div className="flex items-center border border-coal/15">
                   <button
                     onClick={() => setQty((q) => Math.max(1, q - 1))}
-                    className="size-9 grid place-items-center hover:bg-coal/5 transition"
+                    className="size-10 grid place-items-center hover:bg-coal/5 transition"
                     aria-label="Decrease"
                   >
                     <Minus className="size-3" strokeWidth={1.5} />
                   </button>
-                  <span className="w-9 text-center text-sm font-medium">{qty}</span>
+                  <span className="w-10 text-center text-sm font-medium">{qty}</span>
                   <button
                     onClick={() => setQty((q) => Math.min(99, q + 1))}
-                    className="size-9 grid place-items-center hover:bg-coal/5 transition"
+                    className="size-10 grid place-items-center hover:bg-coal/5 transition"
                     aria-label="Increase"
                   >
                     <Plus className="size-3" strokeWidth={1.5} />
@@ -892,7 +905,7 @@ function ProductPage() {
 
             {/* Trust badges */}
             <div className="border border-coal/10 bg-card p-4">
-              <ul className="space-y-2.5">
+              <ul className="space-y-2.5 sm:grid sm:grid-cols-2 sm:gap-x-4 sm:gap-y-2.5 sm:space-y-0 md:block md:space-y-2.5">
                 {[
                   { Icon: ShieldCheck, text: "Authentic, quality guaranteed" },
                   { Icon: RotateCcw, text: "7-day hassle-free returns" },
@@ -910,7 +923,7 @@ function ProductPage() {
         </div>
 
         {/* ── Reviews ── */}
-        <div ref={reviewsRef} className="scroll-mt-28 mt-16 lg:mt-20">
+        <div ref={reviewsRef} className="scroll-mt-28 md:scroll-mt-[160px] lg:scroll-mt-[204px] mt-16 lg:mt-20">
           <ReviewsSection productId={product.id} fallbackRating={0} fallbackCount={0} />
         </div>
 

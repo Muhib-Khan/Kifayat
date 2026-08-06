@@ -5,10 +5,9 @@ import {
   Minus, Plus, Trash, ShoppingBag, ArrowUpRight,
   Truck, ShieldCheck, Lock, AlertTriangle,
 } from "lucide-react";
-import { useCart, cart, cartTotals, refreshCartPrices, validateCartStock } from "@/lib/cart-store";
+import { useCart, cart, cartTotals, refreshCartPrices, validateCartStock, FLAT_DELIVERY_FEE, fetchDeliveryFee } from "@/lib/cart-store";
 import type { CartItem, StockWarning } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-store";
-import { isFirstOrderFreeEligible } from "@/lib/first-order-free";
 import { unapplyVoucherFromProduct } from "@/lib/voucher.functions";
 
 export const Route = createFileRoute("/cart")({
@@ -19,10 +18,21 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const items = useCart();
   const { user } = useAuth();
-  const freeDelivery = isFirstOrderFreeEligible(user?.totalOrdersCount);
-  const { subtotal, shipping, total, count } = cartTotals(items, freeDelivery);
+  const [deliveryFee, setDeliveryFee] = useState<number>(FLAT_DELIVERY_FEE);
+  const { subtotal, shipping, total, count } = cartTotals(items, deliveryFee);
   const [stockWarnings, setStockWarnings] = useState<StockWarning[]>([]);
   const [validating, setValidating] = useState(true);
+
+  // Load the admin-editable delivery fee once on mount
+  useEffect(() => {
+    let alive = true;
+    fetchDeliveryFee().then((fee) => {
+      if (alive) setDeliveryFee(fee);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   // Release the applied voucher use when the item leaves the bag
   function removeItem(item: CartItem) {
@@ -199,17 +209,6 @@ function CartPage() {
 
             {/* ── Order summary ── */}
             <aside className="lg:sticky lg:top-28 h-fit">
-              {freeDelivery && (
-                <div className="mb-4 border border-brass/40 bg-brass/5 p-4 flex items-start gap-3">
-                  <span className="text-lg leading-none">🎉</span>
-                  <div>
-                    <p className="eyebrow text-brass">First order · Free delivery</p>
-                    <p className="text-xs text-coal/70 mt-1 leading-relaxed">
-                      This is your first order — delivery is on us, no code needed. It applies automatically at checkout.
-                    </p>
-                  </div>
-                </div>
-              )}
               <div className="border border-coal/15 p-6 sm:p-8 lg:p-10 bg-paper">
                 <div className="eyebrow text-muted-foreground mb-6">§ Summary</div>
                 <dl className="space-y-3 text-sm">
@@ -219,9 +218,10 @@ function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <dt className="eyebrow text-muted-foreground">Shipping</dt>
-                    <dd className="font-mono">{freeDelivery ? "Free · first order 🎉" : shipping === 0 ? "Free" : `Rs ${shipping}`}</dd>
+                    <dd className="font-mono">Rs {shipping}</dd>
                   </div>
                 </dl>
+                <p className="text-xs text-muted-foreground mt-2">Cheapest Delivery in Pakistan</p>
                 <div className="mt-6 pt-6 border-t border-coal/15 flex items-baseline justify-between">
                   <span className="eyebrow text-muted-foreground">Total · PKR</span>
                   <span className="font-display italic text-3xl lg:text-4xl text-brass">Rs {total.toLocaleString()}</span>
