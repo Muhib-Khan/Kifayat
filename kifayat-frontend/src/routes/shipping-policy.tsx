@@ -11,13 +11,13 @@ function ShippingPolicyPage() {
     <>
       <SEO
         title="Shipping Policy — Fast Delivery Across Pakistan"
-        description="Kifayat ships Pakistan-wide. 2–5 day delivery all across Pakistan, free shipping over Rs 2,500. Learn about tracking, fees, and failed deliveries."
+        description="Kifayat ships Pakistan-wide. 2–5 day delivery all across Pakistan at a flat fee — the cheapest delivery in Pakistan. Learn about fees and failed deliveries."
         path="/shipping-policy"
-        keywords="Kifayat shipping, delivery Pakistan, free shipping Pakistan, COD Pakistan, parcel tracking"
+        keywords="Kifayat shipping, delivery Pakistan, cheap delivery Pakistan, COD Pakistan"
       />
     <LegalPage
       title="Shipping Policy"
-      subtitle="Pakistan-wide delivery with real-time tracking and transparent fees."
+      subtitle="Pakistan-wide delivery with a flat fee and transparent pricing."
       effectiveDate="1 July 2026"
       related={[
         { label: "Return & Refund Policy", to: "/return-policy" },
@@ -47,9 +47,7 @@ function ShippingPolicyPage() {
         {
           heading: "Shipping Fees",
           body: [
-            "First order, every customer: FREE delivery — on us. No code needed, it applies automatically at checkout.",
-            "Standard delivery Pakistan-wide: FREE on orders above Rs 2,500.",
-            "Standard delivery below Rs 2,500: Rs 200 flat fee.",
+            "Standard delivery Pakistan-wide: one flat fee on every order — the cheapest delivery in Pakistan.",
             "Express next-day (select major cities): Rs 350 flat fee, regardless of order value.",
             "Same-day (select major cities): Rs 500 flat fee.",
             "Shipping fees are non-refundable except where the return is due to our error such as wrong or damaged item.",
@@ -62,14 +60,6 @@ function ShippingPolicyPage() {
             "COD orders may take an additional 24 hours for verification before dispatch.",
             "During peak periods (sales events, Eid, etc.), processing times may extend to 2–3 business days. We will notify you of any significant delays.",
             "You will receive an SMS and email confirmation once your order has been dispatched.",
-          ],
-        },
-        {
-          heading: "Order Tracking",
-          body: [
-            "A tracking number and courier link will be sent via SMS and email at the time of dispatch.",
-            "Live tracking is also available under My Account then Orders.",
-            "If your tracking shows delivered but you have not received your order, you must contact us within 24 hours. Claims submitted after 48 hours of the marked delivery date may not be accepted.",
           ],
         },
         {
@@ -114,7 +104,7 @@ function ShippingPolicyPage() {
         },
         {
           heading: "Contact for Shipping Issues",
-          body: "For any shipping-related queries, tracking issues, or non-delivery claims, contact contact@kifayat.co or reach us on WhatsApp at the number listed on our Contact page. Please have your order number ready.",
+          body: "For any shipping-related queries or non-delivery claims, contact contact@kifayat.co or reach us on WhatsApp at the number listed on our Contact page. Please have your order number ready.",
         },
       ]}
     />

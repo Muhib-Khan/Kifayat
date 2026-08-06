@@ -9,7 +9,6 @@ const TIERS = {
     borderGrad: "amber-700/30",
     perks: [
       { icon: "Package", label: "Standard order processing" },
-      { icon: "MapPin", label: "Order tracking" },
     ],
   },
   silver: {
@@ -22,7 +21,7 @@ const TIERS = {
     borderGrad: "gray-400/30",
     perks: [
       { icon: "Zap", label: "Priority order processing" },
-      { icon: "Truck", label: "Free delivery on orders > Rs 2000" },
+      { icon: "Truck", label: "Flat delivery — cheapest in Pakistan" },
       { icon: "ShieldCheck", label: "Exclusive Silver badge" },
     ],
   },
@@ -36,7 +35,7 @@ const TIERS = {
     borderGrad: "yellow-500/30",
     perks: [
       { icon: "Zap", label: "VIP order processing" },
-      { icon: "Truck", label: "Free delivery on all orders" },
+      { icon: "Truck", label: "Flat delivery — cheapest in Pakistan" },
       { icon: "Star", label: "Early access to new products" },
       { icon: "Gift", label: "Birthday surprise" },
       { icon: "ShieldCheck", label: "Exclusive Gold badge" },
@@ -52,7 +51,7 @@ const TIERS = {
     borderGrad: "purple-400/30",
     perks: [
       { icon: "Zap", label: "Personal concierge support" },
-      { icon: "Truck", label: "Free delivery on all orders" },
+      { icon: "Truck", label: "Flat delivery — cheapest in Pakistan" },
       { icon: "Star", label: "Early access to new products" },
       { icon: "Gift", label: "Birthday surprise" },
       { icon: "Timer", label: "Fastest processing priority" },

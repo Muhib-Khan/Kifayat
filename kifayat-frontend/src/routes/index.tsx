@@ -23,8 +23,8 @@ function HomePage() {
   return (
     <PageShell>
       <SEO
-        title="Online Shopping in Pakistan — Electronics, Fashion & More"
-        description="Shop quality electronics, fashion, home goods, beauty and more at Kifayat. Pakistan's trusted online store with free delivery over Rs 2,500, delivered all across Pakistan."
+        title="Kifayat"
+        description="Shop quality electronics, fashion, home goods, beauty and more at Kifayat. Pakistan's trusted online store with flat delivery — Cheapest Delivery in Pakistan."
         path="/"
         keywords="online shopping Pakistan, buy electronics online, fashion online Pakistan, home goods Pakistan, Kifayat"
       />

@@ -6,7 +6,7 @@ export const SITE_NAME = "Kifayat";
 export const TWITTER_HANDLE = "@kifayatpk";
 const DEFAULT_IMAGE = `${SITE_URL}/og-default.jpg`;
 const DEFAULT_DESCRIPTION =
-  "Kifayat — Pakistan's trusted online store for quality products. Shop electronics, fashion, home goods and more, delivered all across Pakistan. Free delivery over Rs\u00a02,500.";
+  "Kifayat — Pakistan's trusted online store for quality products. Shop electronics, fashion, home goods and more, delivered all across Pakistan. Flat delivery — Cheapest Delivery in Pakistan.";
 
 // ─── Main SEO component ────────────────────────────────────────────────────
 interface SEOProps {
@@ -55,7 +55,9 @@ export function SEO({
   availability,
 }: SEOProps) {
   const fullTitle = title
-    ? `${title} | ${SITE_NAME}`
+    ? title === SITE_NAME
+      ? SITE_NAME
+      : `${title} | ${SITE_NAME}`
     : `${SITE_NAME} — Quality Products at Honest Prices in Pakistan`;
 
   const canonicalUrl =

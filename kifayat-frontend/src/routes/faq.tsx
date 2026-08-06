@@ -14,7 +14,7 @@ const groups = [
     title: "Ordering",
     items: [
       ["How do I place an order?", "Browse the catalogue, add items to your cart and proceed to checkout. You can pay with card, cash on delivery, Easypaisa or Jazzcash."],
-      ["Can I order without an account?", "Yes — guest checkout is supported, but signing up lets you track orders and earn rewards."],
+      ["Can I order without an account?", "Yes — guest checkout is supported, but signing up lets you review past orders and earn rewards."],
       ["Do you deliver all across Pakistan?", "Yes — we deliver to every city and town across Pakistan. Dispatch is nationwide."],
     ],
   },
@@ -22,8 +22,7 @@ const groups = [
     title: "Delivery",
     items: [
       ["How long does delivery take?", "Most orders arrive within 2–4 business days. Express delivery is available the next day."],
-      ["Is delivery free?", "Yes — your very first order ships free. After that, delivery is free on orders above Rs 2,500, otherwise a flat Rs 200 applies."],
-      ["Can I track my order?", "Yes — every order gets a tracking page accessible from your account."],
+      ["How much does delivery cost?", "Delivery is a flat fee on every order — no minimums, no surprises. The cheapest delivery in Pakistan."],
     ],
   },
   {
