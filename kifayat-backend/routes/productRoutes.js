@@ -8,6 +8,7 @@ const {
   getReport,
   getStats,
   clearProducts,
+  createManualProduct,
   getProductById,
   getSimilarProducts,
   updateStock,
@@ -61,6 +62,7 @@ router.post(
   upload.single("csv"),
   uploadCSV,
 );
+router.post("/manual", protect, requireAdmin, createManualProduct);
 router.post("/update-pricing-by-category", protect, requireAdmin, updatePricingByCategory);
 router.post("/update-pricing-category", protect, requireAdmin, updatePricingByCategory);
 router.post("/update-pricing-all", protect, requireAdmin, updatePricingAll);

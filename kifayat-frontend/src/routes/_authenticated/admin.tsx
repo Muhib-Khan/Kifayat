@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
-import { Activity, AlertTriangle, BrainCircuit, ChartBar, Database, MessageSquareHeart, Menu, Package, RefreshCw, Settings, ShoppingBag, Star, Ticket, Users, Wrench, X, ShieldAlert } from "lucide-react";
+import { Activity, AlertTriangle, BrainCircuit, ChartBar, Database, MessageSquareHeart, Menu, Package, RefreshCw, Settings, ShoppingBag, Star, Target, Ticket, Users, Wrench, X, ShieldAlert } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-store";
@@ -19,6 +19,7 @@ const nav = [
   { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
   { to: "/admin/low-stock", label: "Low Stock", icon: AlertTriangle },
   { to: "/admin/products", label: "Products", icon: Package },
+  { to: "/admin/product-hunting", label: "Product Hunting", icon: Target },
   { to: "/admin/reviews", label: "Reviews", icon: Star },
   { to: "/admin/defect-reports", label: "Defect Reports", icon: ShieldAlert },
   { to: "/admin/users", label: "Users", icon: Users },

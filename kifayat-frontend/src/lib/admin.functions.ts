@@ -495,13 +495,28 @@ export async function adminToggleFeaturedOnLanding(id: string, featured: boolean
 }
 
 export async function adminGetFeaturedLandingProducts(): Promise<any[]> {
-  const data = await api.get<{ success: boolean; products: any[] }>("/products/featured-landing?limit=20");
+  const data = await api.get<{ success: boolean; products: any[] }>("/products/featured-landing?limit=50");
   return data.products ?? [];
 }
 
 export async function adminGetFeaturedCount(): Promise<number> {
   const data = await api.get<{ success: boolean; count: number }>("/products/featured-count");
   return data.count ?? 0;
+}
+
+// Product Hunting — manually add a product that goes straight to the main page
+export async function adminCreateProduct(input: {
+  name: string;
+  wholesalePrice: number;
+  category?: string;
+  description?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  stock?: number;
+  weight?: number;
+  featuredOnLanding?: boolean;
+}): Promise<any> {
+  return api.post<any>("/products/manual", input);
 }
 
 // ─── AI Automations ───────────────────────────────────────────────────────

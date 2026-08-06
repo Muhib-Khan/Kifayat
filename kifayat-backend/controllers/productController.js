@@ -468,6 +468,147 @@ const uploadCSV = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// POST /api/products/manual  (admin only)
+// Manually creates a single product (Product Hunting workflow).
+// Mirrors the uploadCSV pricing/creation logic for one product.
+// ─────────────────────────────────────────────────────────────────────────────
+const createManualProduct = async (req, res) => {
+  try {
+    const {
+      name,
+      wholesalePrice,
+      category,
+      stock,
+      weight,
+      imageUrl,
+      videoUrl,
+      description,
+      featuredOnLanding,
+    } = req.body || {};
+
+    // ── Validate input ──────────────────────────────────────────────────────
+    if (typeof name !== "string" || !name.trim()) {
+      return res.status(400).json({ success: false, message: "Product name is required." });
+    }
+
+    const wholesale = Number(wholesalePrice);
+    if (
+      wholesalePrice === undefined ||
+      wholesalePrice === null ||
+      wholesalePrice === "" ||
+      !Number.isFinite(wholesale) ||
+      wholesale < 0
+    ) {
+      return res.status(400).json({ success: false, message: "wholesalePrice must be a finite number >= 0." });
+    }
+
+    const cat =
+      typeof category === "string" && category.trim() ? category.trim() : "Uncategorized";
+
+    const stockNum = stock === undefined || stock === null ? 0 : Number(stock);
+    if (!Number.isFinite(stockNum) || stockNum < 0) {
+      return res.status(400).json({ success: false, message: "stock must be a number >= 0." });
+    }
+
+    const weightNum = weight === undefined || weight === null ? 0 : Number(weight);
+    if (!Number.isFinite(weightNum) || weightNum < 0) {
+      return res.status(400).json({ success: false, message: "weight must be a number >= 0." });
+    }
+
+    if (imageUrl !== undefined && typeof imageUrl !== "string") {
+      return res.status(400).json({ success: false, message: "imageUrl must be a string." });
+    }
+    if (videoUrl !== undefined && typeof videoUrl !== "string") {
+      return res.status(400).json({ success: false, message: "videoUrl must be a string." });
+    }
+    if (description !== undefined && typeof description !== "string") {
+      return res.status(400).json({ success: false, message: "description must be a string." });
+    }
+    if (featuredOnLanding !== undefined && typeof featuredOnLanding !== "boolean") {
+      return res.status(400).json({ success: false, message: "featuredOnLanding must be a boolean." });
+    }
+
+    // ── Load pricing settings (mirrors uploadCSV merge block) ───────────────
+    const existingSettings = await Settings.findOne({});
+    const catPricing = existingSettings?.categoryPricing
+      ? Object.fromEntries(existingSettings.categoryPricing)
+      : {};
+    const globalPricing = existingSettings?.globalPricing ?? null;
+
+    // Category % has priority, fallback to global %, else keep 0 (as uploadCSV)
+    let retailPrice = 0;
+    let lowPrice = false;
+    const catPct = catPricing[cat];
+    if (catPct && wholesale > 0) {
+      const priced = computeRetail(wholesale, catPct, false);
+      if (priced) {
+        retailPrice = priced.retail;
+        lowPrice = priced.lowPrice;
+      }
+    } else if (globalPricing && wholesale > 0) {
+      const priced = computeRetail(wholesale, globalPricing, false);
+      if (priced) {
+        retailPrice = priced.retail;
+        lowPrice = priced.lowPrice;
+      }
+    }
+
+    // ── Auto-create the category if it doesn't exist (mirrors uploadCSV) ────
+    await Category.findOrCreateCategory(cat);
+
+    // ── Unique slug: base slug, append numeric suffix on collision ──────────
+    const baseSlug = slugify(name.trim()) || "product";
+    let slug = baseSlug;
+    for (let suffix = 2; suffix <= 1000; suffix++) {
+      const exists = await Product.findOne({ slug });
+      if (!exists) break;
+      slug = `${baseSlug}-${suffix}`;
+    }
+
+    // ── Create the product ──────────────────────────────────────────────────
+    const doc = await Product.create({
+      name: name.trim(),
+      slug,
+      description: typeof description === "string" ? description : "",
+      wholesalePrice: wholesale,
+      retailPrice,
+      lowPrice,
+      stock: stockNum,
+      originalStock: stockNum,
+      weight: weightNum,
+      imageUrl: typeof imageUrl === "string" ? imageUrl : "",
+      videoUrl: typeof videoUrl === "string" ? videoUrl : "",
+      category: cat,
+      featuredOnLanding: featuredOnLanding === undefined ? true : featuredOnLanding,
+      hidden: false,
+      salesCount: 0,
+      stockOutAt: null,
+      sku: "",
+    });
+
+    // ── Emit real-time event (same io/emit wiring as uploadCSV) ─────────────
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("products_updated", {
+        type: "manual_created",
+        inserted: 1,
+        updated: 0,
+        message: "1 new",
+      });
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: "Product created and added to the main page.",
+      product: doc.toPublicObject(),
+    });
+  } catch (err) {
+    console.error("createManualProduct error:", err);
+    return res.status(500).json({ success: false, message: "Server error while creating product." });
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /api/products  (all authenticated users)
 // ─────────────────────────────────────────────────────────────────────────────
 const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -2012,6 +2153,7 @@ const getFeaturedCount = async (req, res) => {
 
 module.exports = {
   uploadCSV,
+  createManualProduct,
   getProducts,
   getLeaderboard,
   getReport,
