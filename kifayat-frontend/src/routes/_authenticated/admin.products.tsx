@@ -768,7 +768,124 @@ function AdminProducts() {
         </motion.div>
       ) : (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`bg-card border border-border shadow-e1 rounded-2xl overflow-hidden transition-opacity ${isLoading ? "opacity-60 pointer-events-none" : ""}`}>
-          <div className="overflow-x-auto">
+          {/* Mobile (below md): stacked card rows — no horizontal scroll */}
+          <div className="md:hidden divide-y divide-border">
+            {products.map((p: any) => {
+              const pid = p._id ?? p.id;
+              const isHidden = p.hidden ?? false;
+              const sales = p.salesCount ?? 0;
+              const inStock = p.inStock ?? (p.stock ?? 0) > 0;
+              const retail = Number(p.retailPrice ?? p.price ?? 0);
+              const wholesale = Number(p.wholesalePrice ?? 0);
+              const margin = wholesale > 0 ? Math.round(((retail - wholesale) / wholesale) * 100) : null;
+              return (
+                <div key={pid} className={`px-4 py-4 space-y-3 hover:bg-secondary/40 active:bg-secondary/60 transition-colors ${isHidden ? "opacity-50 grayscale" : ""}`}>
+                  {/* Thumbnail + name */}
+                  <div className="flex items-start gap-3">
+                    {(p.imageUrl ?? p.image_url) ? (
+                      <img src={(p.imageUrl ?? p.image_url).split(",")[0].split("?")[0].trim()} alt={p.name} className="size-12 object-cover bg-secondary border border-border shrink-0 rounded-lg shadow-sm" />
+                    ) : (
+                      <div className="size-12 bg-secondary border border-border shrink-0 rounded-lg flex items-center justify-center shadow-sm">
+                        <Package className="size-5 text-muted-foreground" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-foreground line-clamp-2">{p.name}</p>
+                      {p.sku && <p className="text-[11px] text-muted-foreground font-mono mt-0.5">{p.sku}</p>}
+                      {p.dynamicDataFetched && (
+                        <span
+                          className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full"
+                          title={p.dynamicDataFetchedAt ? `Fetched ${new Date(p.dynamicDataFetchedAt).toLocaleString("en-PK")}` : "Dynamic data fetched"}
+                        >
+                          <CheckCircle className="size-3" /> Dynamic data fetched
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Category · pricing · stock · status · sold */}
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs">
+                    <span className="font-medium text-muted-foreground">{p.category_name ?? p.category ?? "—"}</span>
+                    <span className="font-bold text-foreground">Rs {retail.toLocaleString()}</span>
+                    {wholesale > 0 ? (
+                      <span className="text-muted-foreground font-medium">
+                        Cost: Rs {wholesale.toLocaleString()}
+                        {margin !== null && (
+                          <span className={`ml-1 font-bold ${margin > 0 ? "text-emerald-600" : "text-red-500"}`}>
+                            ({margin > 0 ? "+" : ""}{margin}%)
+                          </span>
+                        )}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">No cost data</span>
+                    )}
+                    <span className={`font-bold inline-flex items-center justify-center min-w-[2rem] px-2 py-1 rounded-md text-xs ${(p.stock ?? 0) === 0 ? "bg-red-500/10 text-red-600" : (p.stock ?? 0) <= 10 ? "bg-amber-500/10 text-amber-600" : "bg-emerald-500/10 text-emerald-600"}`}>
+                      {p.stock ?? 0}
+                    </span>
+                    <span className={`inline-flex items-center justify-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest rounded border ${inStock ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" : "bg-red-500/10 text-red-600 border-red-500/20"}`}>
+                      {inStock ? "In stock" : "Out"}
+                    </span>
+                    <span className="text-muted-foreground">
+                      Sold: <span className="font-bold text-brass">{sales > 0 ? sales : "—"}</span>
+                    </span>
+                  </div>
+
+                  {/* Full actions set — wraps, never overflows */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <button
+                      onClick={() => setEditingProduct(p)}
+                      title="Edit product"
+                      className="size-9 flex items-center justify-center border border-border bg-card hover:bg-secondary hover:border-coal/30 text-muted-foreground hover:text-foreground rounded-lg transition-all shadow-sm"
+                    >
+                      <Edit2 className="size-4" strokeWidth={2} />
+                    </button>
+                    <button
+                      onClick={() => setOrdersProduct(p)}
+                      title="View orders"
+                      className="size-9 flex items-center justify-center border border-border bg-card hover:bg-secondary hover:border-brass text-muted-foreground hover:text-brass rounded-lg transition-all shadow-sm"
+                    >
+                      <Package className="size-4" strokeWidth={2} />
+                    </button>
+                    <button
+                      onClick={() => dynDataMut.mutate(pid)}
+                      disabled={dynDataMut.isPending && dynFetchingId === pid}
+                      title={p.dynamicDataFetched ? "Refresh dynamic data from HHC" : "Get dynamic data from HHC"}
+                      className={`flex-1 min-w-0 justify-center flex items-center gap-1.5 px-3 py-2 text-[11px] font-bold border rounded-lg transition-all shadow-sm whitespace-nowrap ${p.dynamicDataFetched ? "border-emerald-500/30 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10" : "border-border bg-card hover:bg-secondary hover:border-brass/50 text-muted-foreground hover:text-brass"} disabled:opacity-60 disabled:cursor-not-allowed`}
+                    >
+                      {dynDataMut.isPending && dynFetchingId === pid ? <Loader2 className="size-4 animate-spin" /> : <Database className="size-4" strokeWidth={2} />}
+                      {dynDataMut.isPending && dynFetchingId === pid ? "Fetching…" : "Get Product Dynamic Data"}
+                    </button>
+                    <button
+                      onClick={() => visibilityMut.mutate({ id: pid, hidden: !isHidden })}
+                      title={isHidden ? "Show on store" : "Hide from store"}
+                      className={`size-9 flex items-center justify-center border rounded-lg transition-all shadow-sm ${isHidden ? "border-red-500/30 bg-red-500/5 text-red-500 hover:bg-red-500/10" : "border-border bg-card hover:bg-secondary hover:border-emerald-500/50 text-muted-foreground hover:text-emerald-600"}`}
+                    >
+                      {isHidden ? <EyeOff className="size-4" strokeWidth={2} /> : <Eye className="size-4" strokeWidth={2} />}
+                    </button>
+                    <button
+                      onClick={() => featuredMut.mutate({ id: pid, featured: !(p.featuredOnLanding ?? false) })}
+                      disabled={featuredMut.isPending}
+                      title={p.featuredOnLanding ? "Remove from landing page" : "Feature on landing page"}
+                      className={`size-9 flex items-center justify-center border rounded-lg transition-all shadow-sm disabled:opacity-50 ${(p.featuredOnLanding ?? false) ? "border-brass bg-brass/10 text-brass hover:bg-brass/20" : "border-border bg-card hover:bg-secondary hover:border-brass/50 text-muted-foreground hover:text-brass"}`}
+                    >
+                      {featuredMut.isPending ? <Loader2 className="size-4 animate-spin" /> : <Target className="size-4" strokeWidth={2} />}
+                    </button>
+                    <Link
+                      to="/products/$productId"
+                      params={{ productId: p.slug || pid }}
+                      target="_blank"
+                      className="size-9 flex items-center justify-center border border-border bg-card hover:bg-secondary text-muted-foreground hover:text-foreground rounded-lg transition-all shadow-sm"
+                    >
+                      <ExternalLink className="size-4" strokeWidth={2} />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop (md+): full table */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead>
                 <tr className="border-b border-border bg-secondary/30">
