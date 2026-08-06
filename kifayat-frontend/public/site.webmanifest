@@ -4,6 +4,6 @@
   "description": "Shop quality products at wholesale and retail prices",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#6366f1"
+  "background_color": "#1a1a1a",
+  "theme_color": "#1a1a1a"
 }

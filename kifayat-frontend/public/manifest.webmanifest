@@ -7,7 +7,7 @@
   "background_color": "#1a1a1a",
   "theme_color": "#1a1a1a",
   "icons": [
-    { "src": "/favicon.ico", "sizes": "48x48", "type": "image/x-icon" },
+    { "src": "/favicon.svg", "sizes": "48x48", "type": "image/svg+xml" },
     { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
   ],
   "categories": ["shopping"]
