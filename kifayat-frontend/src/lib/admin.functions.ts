@@ -504,6 +504,24 @@ export async function adminGetFeaturedCount(): Promise<number> {
   return data.count ?? 0;
 }
 
+// Product Hunting — search existing products (name + category), each result
+// carries its own featuredOnLanding flag so the page can show "Added" state.
+export async function adminHuntProducts(params: {
+  search?: string;
+  category?: string;
+  limit?: number;
+} = {}): Promise<{ products: any[]; total: number }> {
+  const { search = "", category = "", limit = 60 } = params;
+  const qs = new URLSearchParams();
+  if (search.trim()) qs.set("search", search.trim());
+  if (category) qs.set("category", category);
+  qs.set("limit", String(limit));
+  const data = await api.get<{ success: boolean; products: any[]; total: number }>(
+    `/products?${qs.toString()}`,
+  );
+  return { products: (data.products ?? []).map(normalizeProduct), total: data.total ?? 0 };
+}
+
 // Product Hunting — manually add a product that goes straight to the main page
 export async function adminCreateProduct(input: {
   name: string;

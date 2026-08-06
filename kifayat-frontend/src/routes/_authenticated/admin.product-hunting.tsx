@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  adminCreateProduct,
   adminGetFeaturedLandingProducts,
   adminGetFeaturedCount,
+  adminHuntProducts,
   adminToggleFeaturedOnLanding,
 } from "@/lib/admin.functions";
 import { listCategories } from "@/lib/shop.functions";
 import { normalizeProduct, type UIProduct } from "@/lib/api";
-import { Image, Inbox, Loader2, Package, Plus, Target } from "lucide-react";
+import { Check, ChevronDown, Image, Inbox, Loader2, Package, Plus, Search, Target } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PanelTableSkeleton } from "@/components/ui/skeleton";
 
@@ -18,42 +18,46 @@ export const Route = createFileRoute("/_authenticated/admin/product-hunting")({
   component: ProductHunting,
 });
 
-const EMPTY_FORM = {
-  name: "",
-  category: "",
-  wholesalePrice: "",
-  stock: "",
-  weight: "",
-  imageUrl: "",
-  description: "",
-  featuredOnLanding: true,
-};
-
 const inputClass =
   "w-full bg-background border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brass/30 focus:border-brass transition";
 
 function ProductHunting() {
   const qc = useQueryClient();
-  const [form, setForm] = useState({ ...EMPTY_FORM });
-  const [thumbOk, setThumbOk] = useState(true);
 
-  const set = (key: keyof typeof EMPTY_FORM, value: string | boolean) => {
-    setForm((f) => ({ ...f, [key]: value }));
-    if (key === "imageUrl") setThumbOk(true);
-  };
+  // ── Search state (name debounced ~400ms, category applies instantly) ────
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [category, setCategory] = useState("");
 
-  // ── Categories for the datalist suggestions ────────────────────────────
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput), 400);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  const hasQuery = debouncedSearch.trim() !== "" || category !== "";
+
+  // ── Categories for the dropdown (slug matches the ?category= param) ─────
   const { data: categories = [] } = useQuery({
     queryKey: ["admin", "categories"],
     queryFn: listCategories,
   });
 
+  // ── Hunt results ──────────────────────────────────────────────────────────
+  const { data: hunt, isLoading: huntLoading } = useQuery({
+    queryKey: ["admin", "hunt", debouncedSearch.trim(), category],
+    queryFn: () => adminHuntProducts({ search: debouncedSearch, category }),
+    enabled: hasQuery,
+    placeholderData: (prev) => prev,
+  });
+  const huntProducts = hunt?.products ?? [];
+
   // ── Featured list + count (same keys the Products page keeps fresh) ─────
-  const { data: featuredRaw, isLoading } = useQuery({
+  const { data: featuredRaw, isLoading: featuredLoading } = useQuery({
     queryKey: ["admin", "featured-landing"],
     queryFn: adminGetFeaturedLandingProducts,
   });
   const featured: UIProduct[] = (featuredRaw ?? []).map(normalizeProduct);
+  const featuredIds = new Set(featured.map((f) => f.id));
 
   const { data: featuredCount = featured.length } = useQuery({
     queryKey: ["admin", "featured-count"],
@@ -64,50 +68,18 @@ function ProductHunting() {
     qc.invalidateQueries({ queryKey: ["admin", "featured-landing"] });
     qc.invalidateQueries({ queryKey: ["admin", "featured-count"] });
     qc.invalidateQueries({ queryKey: ["admin", "products"] });
+    qc.invalidateQueries({ queryKey: ["admin", "hunt"] });
   };
 
-  // ── Create ──────────────────────────────────────────────────────────────
-  const createMut = useMutation({
-    mutationFn: () =>
-      adminCreateProduct({
-        name: form.name.trim(),
-        wholesalePrice: Number(form.wholesalePrice),
-        category: form.category.trim() || undefined,
-        description: form.description.trim() || undefined,
-        imageUrl: form.imageUrl.trim() || undefined,
-        stock: form.stock ? Number(form.stock) : undefined,
-        weight: form.weight ? Number(form.weight) : undefined,
-        featuredOnLanding: form.featuredOnLanding,
-      }),
-    onSuccess: (res: any) => {
-      toast.success(res?.message ?? "Product added.");
-      // Keep category + "show on main page" — reset the rest
-      setForm((f) => ({
-        ...EMPTY_FORM,
-        category: f.category,
-        featuredOnLanding: f.featuredOnLanding,
-      }));
-      setThumbOk(true);
+  // ── Add to main page ──────────────────────────────────────────────────────
+  const addMut = useMutation({
+    mutationFn: ({ id }: { id: string }) => adminToggleFeaturedOnLanding(id, true),
+    onSuccess: () => {
+      toast.success("Added to the main page.");
       refreshFeatured();
     },
-    onError: (e: any) => toast.error(e?.message ?? "Failed to add product."),
+    onError: (e: any) => toast.error(e?.message ?? "Failed to add to main page."),
   });
-
-  const wholesale = Number(form.wholesalePrice);
-  const canSubmit =
-    form.name.trim().length > 0 &&
-    form.wholesalePrice.trim() !== "" &&
-    Number.isFinite(wholesale) &&
-    wholesale > 0 &&
-    !createMut.isPending;
-
-  const handleSubmit = () => {
-    if (!canSubmit) {
-      toast.error("Enter a product name and a wholesale price.");
-      return;
-    }
-    createMut.mutate();
-  };
 
   // ── Unfeature ────────────────────────────────────────────────────────────
   const unfeatureMut = useMutation({
@@ -118,6 +90,10 @@ function ProductHunting() {
     },
     onError: (e: any) => toast.error(e?.message ?? "Failed to update."),
   });
+
+  // A result counts as already-added if the backend says so, or if it is in
+  // the currently featured list (covers stale cache edge cases).
+  const isFeatured = (p: UIProduct) => p.featuredOnLanding === true || featuredIds.has(p.id);
 
   return (
     <motion.div
@@ -135,172 +111,159 @@ function ProductHunting() {
           Product Hunting<span className="text-brass">.</span>
         </h2>
         <p className="text-sm text-muted-foreground mt-2 max-w-xl">
-          Add a product you found and it goes live on the main page (Curated Picks) with retail
-          pricing applied automatically. Unfeature anything you no longer want shown.
+          Find existing products and put them on the main page (Curated Picks). Search by name or
+          browse a category, then hit Add — no manual entry needed. Remove anything you no longer
+          want shown.
         </p>
       </div>
 
+      {/* ── Search ─────────────────────────────────────────────────────────── */}
+      <div className="border border-border rounded-xl overflow-hidden bg-card">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-secondary/30">
+          <Search className="size-4 text-brass shrink-0" strokeWidth={1.5} />
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-sm">Find a product</p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Search by name or narrow down by category. Results refresh as you type.
+            </p>
+          </div>
+        </div>
+        <div className="px-6 py-5 grid sm:grid-cols-[1fr_240px] gap-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+            <input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search product name, SKU or category…"
+              className={`${inputClass} pl-9`}
+            />
+          </div>
+          <div className="relative">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full appearance-none bg-background border border-border rounded-lg px-3 py-2.5 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-brass/30 focus:border-brass transition cursor-pointer"
+            >
+              <option value="">All categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.name}
+                  {c.productCount ? ` (${c.productCount})` : ""}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground pointer-events-none" />
+          </div>
+        </div>
+      </div>
+
       <div className="grid lg:grid-cols-5 gap-6 items-start">
-        {/* ── Create form ─────────────────────────────────────────────────── */}
+        {/* ── Results ──────────────────────────────────────────────────────── */}
         <div className="lg:col-span-3 border border-border rounded-xl overflow-hidden bg-card">
           <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-secondary/30">
             <Package className="size-4 text-brass shrink-0" strokeWidth={1.5} />
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm">Add a product</p>
+              <p className="font-medium text-sm">Results</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Wholesale price in PKR. Retail is worked out from it automatically.
+                Matches appear here as you search.
               </p>
             </div>
-          </div>
-
-          <div className="px-6 py-6 space-y-5">
-            {/* Name */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">
-                Product name <span className="text-brass">*</span>
-              </label>
-              <input
-                value={form.name}
-                onChange={(e) => set("name", e.target.value)}
-                placeholder="e.g. Foldable Bluetooth Keyboard"
-                className={inputClass}
-              />
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              {/* Category */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Category</label>
-                <input
-                  value={form.category}
-                  onChange={(e) => set("category", e.target.value)}
-                  placeholder="e.g. Electronics"
-                  list="product-hunting-categories"
-                  className={inputClass}
-                />
-                <datalist id="product-hunting-categories">
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.name} />
-                  ))}
-                </datalist>
-              </div>
-
-              {/* Wholesale price */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">
-                  Wholesale price (PKR) <span className="text-brass">*</span>
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  inputMode="decimal"
-                  value={form.wholesalePrice}
-                  onChange={(e) => set("wholesalePrice", e.target.value)}
-                  placeholder="e.g. 1250"
-                  className={inputClass}
-                />
-                <p className="text-[11px] text-muted-foreground leading-snug">
-                  Retail is computed automatically: flat +Rs 270 when wholesale is under Rs 500,
-                  otherwise the category markup applies.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              {/* Stock */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Stock</label>
-                <input
-                  type="number"
-                  min="0"
-                  inputMode="numeric"
-                  value={form.stock}
-                  onChange={(e) => set("stock", e.target.value)}
-                  placeholder="e.g. 10"
-                  className={inputClass}
-                />
-              </div>
-
-              {/* Weight */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Weight (kg)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  inputMode="decimal"
-                  value={form.weight}
-                  onChange={(e) => set("weight", e.target.value)}
-                  placeholder="e.g. 0.8"
-                  className={inputClass}
-                />
-              </div>
-            </div>
-
-            {/* Image URL with live preview */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Image URL</label>
-              <div className="relative">
-                <input
-                  value={form.imageUrl}
-                  onChange={(e) => set("imageUrl", e.target.value)}
-                  placeholder="https://…"
-                  className={`${inputClass} ${form.imageUrl.trim() && thumbOk ? "pr-24" : ""}`}
-                />
-                {form.imageUrl.trim() && thumbOk && (
-                  <img
-                    src={form.imageUrl.trim().split(",")[0].split("?")[0]}
-                    alt="Image preview"
-                    onError={() => setThumbOk(false)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 size-16 rounded-md object-cover border border-border bg-secondary/50"
-                  />
-                )}
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-muted-foreground">Description</label>
-              <textarea
-                value={form.description}
-                onChange={(e) => set("description", e.target.value)}
-                placeholder="Short description shown on the product page"
-                rows={3}
-                className={`${inputClass} resize-y`}
-              />
-            </div>
-
-            {/* Show on main page */}
-            <label className="flex items-center gap-2.5 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={form.featuredOnLanding}
-                onChange={(e) => set("featuredOnLanding", e.target.checked)}
-                className="size-4 accent-brass rounded cursor-pointer"
-              />
-              <span className="text-sm font-medium">Show on main page</span>
-              <span className="text-xs text-muted-foreground">
-                (Curated Picks — on by default)
+            {hasQuery && !huntLoading && (
+              <span className="ml-auto shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-brass/10 text-brass border border-brass/25">
+                <span className="size-1.5 rounded-full bg-brass" />
+                {hunt?.total ?? 0} found
               </span>
-            </label>
-
-            {/* Submit */}
-            <div className="pt-1">
-              <button
-                onClick={handleSubmit}
-                disabled={!canSubmit}
-                className="inline-flex items-center gap-2 bg-coal text-bone px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-coal/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              >
-                {createMut.isPending ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <Plus className="size-4" strokeWidth={2} />
-                )}
-                {createMut.isPending ? "Adding…" : "Add product"}
-              </button>
-            </div>
+            )}
           </div>
+
+          {huntLoading ? (
+            <div className="p-4">
+              <PanelTableSkeleton rows={6} cols={2} header={false} />
+            </div>
+          ) : !hasQuery ? (
+            <div className="px-6 py-14 flex flex-col items-center text-center">
+              <Search className="size-8 text-muted-foreground/40 mb-3" strokeWidth={1.5} />
+              <p className="text-sm text-muted-foreground">Search for a product to get started.</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">
+                Type a name or pick a category — matches appear here.
+              </p>
+            </div>
+          ) : huntProducts.length === 0 ? (
+            <div className="px-6 py-14 flex flex-col items-center text-center">
+              <Inbox className="size-8 text-muted-foreground/40 mb-3" strokeWidth={1.5} />
+              <p className="text-sm text-muted-foreground">No products match.</p>
+              <p className="text-xs text-muted-foreground/60 mt-1">
+                Try a different name or category.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="divide-y divide-border">
+                {huntProducts.map((p) => (
+                  <div key={p.id} className="px-4 py-3.5 flex items-center gap-3.5">
+                    <div className="size-12 shrink-0 rounded-lg overflow-hidden border border-border bg-secondary/40 grid place-items-center">
+                      {p.image_url ? (
+                        <img
+                          src={p.image_url}
+                          alt=""
+                          loading="lazy"
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <Image className="size-4 text-muted-foreground/50" strokeWidth={1.5} />
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold truncate">
+                        {p.category_name ?? "Uncategorized"}
+                      </p>
+                      <p className="text-sm font-medium text-foreground line-clamp-2 leading-snug mt-0.5">
+                        {p.name}
+                      </p>
+                      <p className="mt-0.5 flex items-center gap-2">
+                        <span className="text-xs font-bold text-brass">
+                          Rs {p.price.toLocaleString("en-PK")}
+                        </span>
+                        {!p.inStock && (
+                          <span className="text-[10px] font-semibold text-red-500/80">
+                            Out of stock
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    {isFeatured(p) ? (
+                      <span
+                        title="Already on the main page"
+                        className="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-brass/30 bg-brass/10 text-brass"
+                      >
+                        <Check className="size-3.5" strokeWidth={2} /> Added
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => addMut.mutate({ id: p.id })}
+                        disabled={addMut.isPending}
+                        title="Add to main page"
+                        className="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg border border-brass/40 bg-brass/10 text-brass hover:bg-brass/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {addMut.isPending && addMut.variables?.id === p.id ? (
+                          <Loader2 className="size-3.5 animate-spin" />
+                        ) : (
+                          <Plus className="size-3.5" strokeWidth={2} />
+                        )}
+                        {addMut.isPending && addMut.variables?.id === p.id ? "Adding…" : "Add"}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              {hunt && hunt.total > huntProducts.length && (
+                <p className="px-6 py-3 border-t border-border text-[11px] text-muted-foreground">
+                  Showing the first {huntProducts.length} of {hunt.total} matches — narrow the
+                  search to find more.
+                </p>
+              )}
+            </>
+          )}
         </div>
 
         {/* ── On the main page ─────────────────────────────────────────────── */}
@@ -315,11 +278,11 @@ function ProductHunting() {
             </div>
             <span className="ml-auto shrink-0 inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-brass/10 text-brass border border-brass/25">
               <span className="size-1.5 rounded-full bg-brass" />
-              {isLoading ? "…" : `${featuredCount} live`}
+              {featuredLoading ? "…" : `${featuredCount} live`}
             </span>
           </div>
 
-          {isLoading ? (
+          {featuredLoading ? (
             <div className="p-4">
               <PanelTableSkeleton rows={5} cols={2} header={false} />
             </div>
@@ -330,7 +293,7 @@ function ProductHunting() {
                 No products featured on the main page yet.
               </p>
               <p className="text-xs text-muted-foreground/60 mt-1">
-                Add one from the form and it will show up here.
+                Search above and add one — it appears here.
               </p>
             </div>
           ) : (
