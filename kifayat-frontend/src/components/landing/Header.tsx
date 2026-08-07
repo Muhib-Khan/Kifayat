@@ -33,7 +33,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string; strokeW
 };
 
 // ─── Inline search bar ─────────────────────────────────────────────────────────
-function HeaderSearch() {
+function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { className?: string }) {
   const navigate  = useNavigate();
   const [q, setQ] = useState("");
   const [debouncedQ, setDebouncedQ] = useState("");
@@ -78,7 +78,7 @@ function HeaderSearch() {
   }
 
   return (
-    <div ref={wrapRef} className="relative flex-1 min-w-0 max-w-2xl">
+    <div ref={wrapRef} className={className}>
       <form onSubmit={submit} className="flex min-w-0">
         <div className="relative flex-1 min-w-0">
           <input
@@ -362,11 +362,11 @@ export function Header() {
             Kifayat<span className="text-brass">.</span>
           </Link>
 
-          {/* Search bar */}
-          <HeaderSearch />
+          {/* Search bar — desktop inline */}
+          <HeaderSearch className="hidden lg:block relative flex-1 min-w-0 max-w-2xl" />
 
           {/* Right icons */}
-          <div className="flex items-center gap-3 lg:gap-4 shrink-0">
+          <div className="flex items-center gap-3 lg:gap-4 shrink-0 ml-auto lg:ml-0">
             <AccountDropdown />
             <Link to="/cart" aria-label="Cart" data-cart-icon
               className="flex flex-col items-center gap-0.5 p-2.5 -m-1 relative hover:text-brass transition-colors group">
@@ -382,6 +382,11 @@ export function Header() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* ── Mobile search row (full width below nav) ── */}
+      <div className="lg:hidden bg-bone/95 backdrop-blur-xl border-b border-coal/8 px-3 sm:px-4 pb-3">
+        <HeaderSearch className="w-full" />
       </div>
 
       {/* ── Category strip ── */}
