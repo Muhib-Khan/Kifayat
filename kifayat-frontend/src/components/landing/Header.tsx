@@ -54,6 +54,7 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
 
   const hasSuggestions =
     debouncedQ.length >= 2 && (data?.queries?.length || data?.products?.length);
+  const hasQueries = !!data?.queries?.length;
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -111,7 +112,7 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
             transition={{ duration: 0.18 }}
             className="absolute top-full left-0 right-0 z-50 bg-bone border border-coal/15 shadow-xl mt-0.5 max-h-[min(420px,65vh)] overflow-y-auto"
           >
-            <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className={`p-4 grid gap-5 ${hasQueries ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
               {data?.queries && data.queries.length > 0 && (
                 <div>
                   <p className="eyebrow text-coal/40 text-[10px] mb-2">Suggestions</p>
