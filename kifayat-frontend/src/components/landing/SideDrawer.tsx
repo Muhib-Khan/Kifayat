@@ -8,7 +8,7 @@ import { listCategories } from "@/lib/shop.functions";
 export function SideDrawer() {
   const open = useDrawerOpen();
   const close = () => uiStore.setDrawer(false);
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [], isLoading } = useQuery({
     queryKey: ["categories"],
     queryFn: listCategories,
     staleTime: 5 * 60 * 1000,
@@ -35,7 +35,16 @@ export function SideDrawer() {
           <nav className="px-6 lg:px-10 py-10 lg:py-14">
             <p className="eyebrow text-bone/40 mb-6">Browse</p>
             <ul className="space-y-1">
-              {categories.map((c, i) => (
+              {isLoading
+                ? Array.from({ length: 5 }).map((_, i) => (
+                    <li key={i} className="py-3 border-b border-bone/10" aria-hidden>
+                      <div className="flex items-baseline gap-5">
+                        <div className="h-3 w-6 rounded bg-bone/15 animate-pulse" />
+                        <div className="h-8 w-2/3 rounded bg-bone/15 animate-pulse" />
+                      </div>
+                    </li>
+                  ))
+                : categories.map((c, i) => (
                 <li key={c.slug}>
                   <Link
                     to="/category/$slug"

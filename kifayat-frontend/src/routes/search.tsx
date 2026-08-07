@@ -8,6 +8,7 @@ import { ProductGridSkeleton } from "@/components/ui/skeleton";
 import { SEO } from "@/components/seo/SEO";
 import { SearchResultsPageSchema } from "@/components/seo/JsonLd";
 import { SITE_URL } from "@/components/seo/SEO";
+import { useT } from "@/lib/i18n";
 
 const SORT_LABELS: Record<string, string> = {
   relevance: "Relevance",
@@ -34,6 +35,7 @@ function SearchPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
   const [query, setQuery] = useState(search.q);
+  const t = useT();
 
   useEffect(() => setQuery(search.q), [search.q]);
 
@@ -194,7 +196,7 @@ function SearchPage() {
                   )}
                   {p.inStock === false && (
                     <div className="absolute inset-0 grid place-items-center">
-                      <span className="eyebrow bg-coal text-bone px-3 py-1.5">Out of stock</span>
+                      <span className="eyebrow bg-coal text-bone px-3 py-1.5">{t("btn.outOfStock")}</span>
                     </div>
                   )}
                 </div>

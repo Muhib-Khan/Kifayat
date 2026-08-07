@@ -5,12 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useRef } from "react";
 import { listProducts } from "@/lib/shop.functions";
 import { resolveImage } from "@/lib/product-image-map";
+import { useT } from "@/lib/i18n";
 
 const FEATURES = [
-  { Icon: Truck,       title: "Pakistan-wide delivery", body: "2–5 working days" },
-  { Icon: ShieldCheck, title: "Cash on delivery",       body: "Pay the courier" },
-  { Icon: RotateCcw,   title: "7-day returns",          body: "Easy return policy" },
-  { Icon: Headphones,  title: "Local support",          body: "Email & WhatsApp" },
+  { Icon: Truck,       titleKey: "trust.delivery", bodyKey: "hero.deliveryBody" },
+  { Icon: ShieldCheck, titleKey: "trust.cod",       bodyKey: "hero.codBody" },
+  { Icon: RotateCcw,   titleKey: "trust.returns",   bodyKey: "hero.returnsBody" },
+  { Icon: Headphones,  titleKey: "hero.support",    bodyKey: "hero.supportBody" },
 ];
 
 const MARQUEE_ITEMS = ["Electronics", "·", "Fashion", "·", "Home & Kitchen", "·", "Beauty", "·", "Sports", "·", "New Arrivals", "·"];
@@ -18,6 +19,7 @@ const MARQUEE_ITEMS = ["Electronics", "·", "Fashion", "·", "Home & Kitchen", "
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const t = useT();
 
   const { data: leftProducts = [], isLoading: loadingLeft } = useQuery({
     queryKey: ["hero", "left"],
@@ -80,7 +82,6 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
             className="hidden lg:block lg:col-span-4 aspect-[3/4.2] bg-paper overflow-hidden relative self-end img-bone-grade"
-            data-cursor="view"
           >
             {leftProduct ? (
               <motion.img
@@ -119,11 +120,11 @@ export function Hero() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Season 01 — Edition
+              {t("hero.badge")}
             </motion.p>
 
             {/* headline */}
-            <h1 className="font-display italic leading-[0.86] tracking-tight text-[18vw] sm:text-[13vw] lg:text-[8.5vw] xl:text-[7.8vw]">
+            <h1 className="font-display italic leading-[0.86] tracking-tight text-[18vw] sm:text-[13vw] lg:text-[8.5vw] xl:text-[7.8vw]" dir="ltr">
               {(["Objects,", "considered."] as const).map((word, i) => (
                 <span key={word} className="block overflow-hidden">
                   <motion.span
@@ -145,7 +146,7 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.9, delay: 0.85 }}
             >
-              Quality essentials, fairly priced — dispatched Pakistan-wide.
+              {t("hero.subline")}
             </motion.p>
 
             {/* CTAs */}
@@ -158,7 +159,6 @@ export function Hero() {
               {/* Primary — brass sweep fill */}
               <Link
                 to="/products"
-                data-cursor="view"
                 className="group relative inline-flex items-center justify-between gap-6 bg-coal text-bone w-full max-w-[280px] px-8 py-[15px] eyebrow overflow-hidden"
               >
                 {/* brass fill slides in from left on hover */}
@@ -167,7 +167,7 @@ export function Hero() {
                   className="absolute inset-0 bg-brass translate-x-[-101%] group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 />
                 <span className="relative z-10 transition-colors duration-300 group-hover:text-coal tracking-widest">
-                  Explore the Edit
+                  {t("hero.cta")}
                 </span>
                 <ArrowRight
                   className="relative z-10 size-4 shrink-0 transition-all duration-300 group-hover:translate-x-1 group-hover:text-coal"
@@ -180,7 +180,7 @@ export function Hero() {
                 to="/products"
                 className="group inline-flex items-center gap-1.5 eyebrow text-coal/45 hover:text-coal transition-colors duration-200 text-[11px]"
               >
-                All products
+                {t("hero.secondary")}
                 <ArrowUpRight
                   className="size-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200"
                   strokeWidth={1.5}
@@ -216,7 +216,6 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.3, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
             className="hidden lg:block lg:col-span-4 aspect-[3/4.6] bg-paper overflow-hidden relative self-start lg:-mt-8 img-bone-grade"
-            data-cursor="view"
           >
             {rightProduct ? (
               <motion.img
@@ -246,12 +245,12 @@ export function Hero() {
           transition={{ duration: 0.85, delay: 1.25 }}
           className="mt-10 lg:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-px bg-coal/10 border border-coal/10"
         >
-          {FEATURES.map(({ Icon, title, body }) => (
-            <div key={title} className="bg-bone flex items-start gap-3.5 px-5 py-5 lg:px-6 lg:py-6 group">
+          {FEATURES.map(({ Icon, titleKey, bodyKey }) => (
+            <div key={titleKey} className="bg-bone flex items-start gap-3.5 px-5 py-5 lg:px-6 lg:py-6 group">
               <Icon className="size-4 text-brass mt-0.5 shrink-0" strokeWidth={1.5} aria-hidden />
               <div>
-                <p className="eyebrow text-[10px] sm:text-[11px] leading-tight">{title}</p>
-                <p className="text-[11px] sm:text-xs text-coal/50 mt-1 leading-snug">{body}</p>
+                <p className="eyebrow text-[10px] sm:text-[11px] leading-tight">{t(titleKey)}</p>
+                <p className="text-[11px] sm:text-xs text-coal/50 mt-1 leading-snug">{t(bodyKey)}</p>
               </div>
             </div>
           ))}
@@ -264,7 +263,9 @@ export function Hero() {
           {[0, 1].map((k) => (
             <div key={k} className="flex gap-12 shrink-0 pr-12">
               {MARQUEE_ITEMS.map((w, i) => (
-                <span key={i} className={w === "·" ? "text-brass text-xl self-center" : ""}>{w}</span>
+                <span key={i} className={w === "·" ? "text-brass text-xl self-center" : ""}>
+                  {w === "New Arrivals" ? t("marquee.new") : w}
+                </span>
               ))}
             </div>
           ))}

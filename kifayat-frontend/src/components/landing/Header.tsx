@@ -7,6 +7,7 @@ import {
 import { uiStore } from "@/lib/ui-store";
 import { useAuth, signOut } from "@/lib/auth-store";
 import { useCart, cartTotals, FLAT_DELIVERY_FEE, fetchDeliveryFee } from "@/lib/cart-store";
+import { useT, useLang, langStore } from "@/lib/i18n";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { searchSuggest } from "@/lib/search.functions";
@@ -39,13 +40,14 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
   const [debouncedQ, setDebouncedQ] = useState("");
   const [open, setOpen] = useState(false);
   const wrapRef   = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQ(q), 300);
     return () => clearTimeout(timer);
   }, [q]);
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["header-suggest", debouncedQ],
     queryFn: () => searchSuggest(debouncedQ),
     enabled: debouncedQ.length >= 2,
@@ -55,6 +57,7 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
   const hasSuggestions =
     debouncedQ.length >= 2 && (data?.queries?.length || data?.products?.length);
   const hasQueries = !!data?.queries?.length;
+  const showPanel = debouncedQ.length >= 2 && (isLoading || hasSuggestions);
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -86,7 +89,7 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
             value={q}
             onChange={(e) => { setQ(e.target.value); setOpen(true); }}
             onFocus={() => setOpen(true)}
-            placeholder="Search products, brands, categories…"
+            placeholder={t("search.placeholder")}
             className="w-full min-w-0 h-11 pl-3 sm:pl-5 pr-9 sm:pr-10 border-2 border-coal/20 bg-paper focus:border-coal outline-none text-xs sm:text-sm transition-colors placeholder:text-coal/40"
           />
           {q && (
@@ -99,12 +102,12 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
         <button type="submit"
            className="shrink-0 h-11 px-3 sm:px-6 bg-coal text-bone eyebrow text-xs hover:bg-brass hover:text-coal transition-colors duration-300">
            <Search className="size-4 sm:hidden" strokeWidth={1.5} />
-           <span className="hidden sm:inline">Search</span>
+           <span className="hidden sm:inline">{t("search.submit")}</span>
         </button>
       </form>
 
       <AnimatePresence>
-        {open && hasSuggestions && (
+        {open && showPanel && (
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
@@ -113,9 +116,18 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
             className="absolute top-full left-0 right-0 z-50 bg-bone border border-coal/15 shadow-xl mt-0.5 max-h-[min(420px,65vh)] overflow-y-auto"
           >
             <div className={`p-4 grid gap-5 ${hasQueries ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
+              {isLoading ? (
+                <div className="space-y-3" aria-hidden>
+                  <div className="h-2.5 w-20 rounded bg-coal/10 animate-pulse" />
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="h-4 rounded bg-coal/10 animate-pulse w-3/4" />
+                  ))}
+                </div>
+              ) : (
+              <>
               {data?.queries && data.queries.length > 0 && (
                 <div>
-                  <p className="eyebrow text-coal/40 text-[10px] mb-2">Suggestions</p>
+                  <p className="eyebrow text-coal/40 text-[10px] mb-2">{t("search.suggestions")}</p>
                   <ul className="space-y-0.5">
                     {data.queries.slice(0, 5).map((s) => (
                       <li key={s} className="min-w-0">
@@ -131,7 +143,7 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
               )}
               {data?.products && data.products.length > 0 && (
                 <div>
-                  <p className="eyebrow text-coal/40 text-[10px] mb-2">Products</p>
+                  <p className="eyebrow text-coal/40 text-[10px] mb-2">{t("search.products")}</p>
                   <ul className="space-y-0.5">
                     {data.products.slice(0, 4).map((p: any) => (
                       <li key={p.slug}>
@@ -153,6 +165,8 @@ function HeaderSearch({ className = "relative flex-1 min-w-0 max-w-2xl" }: { cla
                   </ul>
                 </div>
               )}
+              </>
+              )}
             </div>
           </motion.div>
         )}
@@ -167,6 +181,7 @@ function AccountDropdown() {
   const navigate  = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   useEffect(() => {
     function click(e: MouseEvent) {
@@ -183,7 +198,7 @@ function AccountDropdown() {
         className="flex flex-col items-center gap-0.5 p-2.5 -m-1 hover:text-brass transition-colors group">
         <User className="size-5" strokeWidth={1.2} />
         <span className="eyebrow text-[9px] hidden sm:block text-coal/60 group-hover:text-brass transition-colors">
-          {user ? "Account" : "Sign In"}
+          {user ? t("header.account") : t("header.signIn")}
         </span>
       </button>
 
@@ -282,6 +297,8 @@ export function Header() {
   const items       = useCart();
   const { count }   = cartTotals(items);
   const { user }    = useAuth();
+  const t           = useT();
+  const lang        = useLang();
 
   // ── Admin-editable delivery fee (falls back to FLAT_DELIVERY_FEE) ─────────
   const [deliveryFee, setDeliveryFee] = useState<number>(FLAT_DELIVERY_FEE);
@@ -331,16 +348,29 @@ export function Header() {
       <div className="bg-coal text-bone">
         <div className="max-w-[1600px] mx-auto px-4 lg:px-8 h-9 flex items-center justify-between eyebrow text-[11px]">
           <span className="hidden sm:inline opacity-75">
-            Rs {deliveryFee} delivery — Cheapest Delivery in Pakistan
+            {lang === "en"
+              ? t("banner.delivery", { fee: deliveryFee })
+              : "مفت ڈیلیوری — پاکستان میں سب سے سستی"}
           </span>
           <span className="sm:hidden opacity-75">
-            Cheapest Delivery in Pakistan
+            پاکستان میں سب سے سستی ڈیلیوری
           </span>
           <div className="flex items-center gap-5 opacity-75">
-            <span className="hidden sm:inline">COD available · PKR</span>
+            <span className="hidden sm:inline">{t("banner.cod")}</span>
             <Link to="/contact" className="hover:opacity-100 transition hover:text-brass">
-              Help
+              {t("header.help")}
             </Link>
+            <button
+              type="button"
+              onClick={() => langStore.toggle()}
+              className="inline-flex items-center gap-1 px-2 py-0.5 border border-bone/30 hover:border-bone hover:text-brass transition"
+              aria-label="Switch language"
+            >
+              <span className="font-bold">{lang === "en" ? "اردو" : "EN"}</span>
+              <span className="hidden sm:inline opacity-70 text-[10px]">
+                {lang === "en" ? "Switch" : "تبدیل"}
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -373,7 +403,7 @@ export function Header() {
               className="flex flex-col items-center gap-0.5 p-2.5 -m-1 relative hover:text-brass transition-colors group">
               <ShoppingBag className="size-5" strokeWidth={1.2} />
               <span className="eyebrow text-[9px] hidden sm:block text-coal/60 group-hover:text-brass transition-colors">
-                Cart
+                {t("header.cart")}
               </span>
               {count > 0 && (
                 <span className="absolute -top-0.5 left-5 size-4 rounded-full bg-brass text-coal text-[9px] font-bold grid place-items-center">
@@ -394,9 +424,9 @@ export function Header() {
       <CategoryStrip />
       <div className="hidden lg:block bg-paper border-b border-coal/8">
         <div className="max-w-[1600px] mx-auto px-8 h-9 flex items-center justify-center gap-8 eyebrow text-[10px] text-coal/55">
-          <span className="inline-flex items-center gap-1.5"><Truck className="size-3 text-brass" strokeWidth={1.5} /> Pakistan-wide delivery</span>
-          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="size-3 text-brass" strokeWidth={1.5} /> Cash on delivery</span>
-          <span className="inline-flex items-center gap-1.5"><RotateCcw className="size-3 text-brass" strokeWidth={1.5} /> 7-day returns</span>
+          <span className="inline-flex items-center gap-1.5"><Truck className="size-3 text-brass" strokeWidth={1.5} /> {t("trust.delivery")}</span>
+          <span className="inline-flex items-center gap-1.5"><ShieldCheck className="size-3 text-brass" strokeWidth={1.5} /> {t("trust.cod")}</span>
+          <span className="inline-flex items-center gap-1.5"><RotateCcw className="size-3 text-brass" strokeWidth={1.5} /> {t("trust.returns")}</span>
         </div>
       </div>
     </motion.header>

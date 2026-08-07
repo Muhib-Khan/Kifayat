@@ -16,7 +16,7 @@ function ProductSearch({ onSelect }: { onSelect: (p: UIProduct) => void }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
-  const { data: results = [] } = useQuery({
+  const { data: results = [], isLoading } = useQuery({
     queryKey: ["product-search", query],
     queryFn: () => listProducts({ search: query, limit: 8 }),
     enabled: query.length >= 2,
@@ -35,27 +35,37 @@ function ProductSearch({ onSelect }: { onSelect: (p: UIProduct) => void }) {
           className="w-full h-11 pl-9 pr-3.5 rounded-md border border-border outline-none focus:border-primary text-sm"
         />
       </div>
-      {open && query.length >= 2 && results.length > 0 && (
+      {open && query.length >= 2 && (isLoading || results.length > 0) && (
         <ul className="absolute z-20 mt-1 w-full bg-card border border-border rounded-lg shadow-lg max-h-56 overflow-y-auto">
-          {results.map((p) => (
-            <li key={p.id}>
-              <button
-                type="button"
-                onClick={() => { onSelect(p); setQuery(""); setOpen(false); }}
-                className="w-full text-left px-3.5 py-2.5 text-sm hover:bg-secondary flex items-center gap-3"
-              >
-                {p.image_url ? (
-                  <img src={p.image_url} alt="" className="size-8 rounded object-cover shrink-0" />
-                ) : (
-                  <Package className="size-8 rounded object-cover shrink-0 text-muted-foreground" />
-                )}
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{p.name}</p>
-                  <p className="text-xs text-muted-foreground">Rs. {p.price?.toLocaleString()}</p>
-                </div>
-              </button>
-            </li>
-          ))}
+          {isLoading
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <li key={i} className="px-3.5 py-2.5 flex items-center gap-3">
+                  <div className="size-8 rounded bg-secondary animate-pulse shrink-0" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-3 rounded bg-secondary animate-pulse w-3/4" />
+                    <div className="h-2.5 rounded bg-secondary animate-pulse w-1/3" />
+                  </div>
+                </li>
+              ))
+            : results.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    onClick={() => { onSelect(p); setQuery(""); setOpen(false); }}
+                    className="w-full text-left px-3.5 py-2.5 text-sm hover:bg-secondary flex items-center gap-3"
+                  >
+                    {p.image_url ? (
+                      <img src={p.image_url} alt="" className="size-8 rounded object-cover shrink-0" />
+                    ) : (
+                      <Package className="size-8 rounded object-cover shrink-0 text-muted-foreground" />
+                    )}
+                    <div className="min-w-0">
+                      <p className="truncate font-medium">{p.name}</p>
+                      <p className="text-xs text-muted-foreground">Rs. {p.price?.toLocaleString()}</p>
+                    </div>
+                  </button>
+                </li>
+              ))}
         </ul>
       )}
       {open && query.length >= 2 && results.length === 0 && (

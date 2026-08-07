@@ -4,6 +4,7 @@ import { listWishlist, toggleWishlist } from "@/lib/account.functions";
 import { Heart, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { cart } from "@/lib/cart-store";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/account/wishlist")({
   component: Wishlist,
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/account/wishlist")({
 
 function Wishlist() {
   const qc = useQueryClient();
+  const t = useT();
   const { data = [], isLoading } = useQuery({
     queryKey: ["wishlist"],
     queryFn: listWishlist,
@@ -102,7 +104,7 @@ function Wishlist() {
                   )}
                   {p.inStock === false && (
                     <div className="absolute inset-0 grid place-items-center">
-                      <span className="eyebrow bg-coal text-bone px-3 py-1.5">Out of stock</span>
+                      <span className="eyebrow bg-coal text-bone px-3 py-1.5">{t("btn.outOfStock")}</span>
                     </div>
                   )}
                 </div>
@@ -125,7 +127,7 @@ function Wishlist() {
                     disabled={p.inStock === false}
                     className="text-[11px] eyebrow px-2.5 py-1.5 border border-coal/20 hover:bg-coal hover:text-bone transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-coal"
                   >
-                    {p.inStock === false ? "Out of stock" : "Add to bag"}
+                    {p.inStock === false ? t("btn.outOfStock") : t("btn.addToBag")}
                   </button>
                 </div>
               </div>

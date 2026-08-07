@@ -5,6 +5,7 @@ import { isWishlisted, toggleWishlist } from "@/lib/account.functions";
 import { useAuth } from "@/lib/auth-store";
 import { fetchDeliveryFee } from "@/lib/cart-store";
 import { toast } from "sonner";
+import { useT } from "@/lib/i18n";
 
 export type CardProduct = {
   id?: string;
@@ -24,6 +25,7 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const t = useT();
   const { data } = useQuery({
     queryKey: ["wishlisted", wishKey, user?._id],
     queryFn: () => isWishlisted(wishKey),
@@ -61,7 +63,6 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
         to="/products/$productId"
         params={{ productId: p.slug }}
         className="block"
-        data-cursor="view"
       >
         <div className="relative aspect-[3/4] bg-paper overflow-hidden rounded-xl img-bone-grade">
           {p.image ? (
@@ -85,7 +86,7 @@ export function ProductCard({ p, index }: { p: CardProduct; index?: number }) {
           {/* sold-out overlay */}
           {p.inStock === false && (
             <div className="absolute inset-0 grid place-items-center">
-              <span className="eyebrow bg-coal text-bone px-3 py-1.5">Out of stock</span>
+              <span className="eyebrow bg-coal text-bone px-3 py-1.5">{t("btn.outOfStock")}</span>
             </div>
           )}
 

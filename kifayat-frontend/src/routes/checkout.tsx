@@ -7,9 +7,11 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 import LocationPicker from "@/components/LocationPicker";
 import AddressAutocomplete from "@/components/AddressAutocomplete";
-import { searchAddress } from "@/services/geocoding";
+import { searchAddress, POPULAR_CITIES } from "@/services/geocoding";
 import type { GeocodingResult } from "@/services/geocoding";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatPhonePK } from "@/lib/format";
+import { useT } from "@/lib/i18n";
 import {
   getMyVouchers,
   unapplyVoucherFromProduct,
@@ -259,6 +261,7 @@ function Checkout() {
   const items = useCart();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const t = useT();
 
   const placedRef = useRef(false);
   const mountedAtRef = useRef(Date.now());
@@ -353,6 +356,15 @@ function Checkout() {
   const totals = cartTotals(items, deliveryFee);
   const set = (key: keyof ShipmentForm) => (v: string) =>
     setForm((f) => ({ ...f, [key]: v }));
+
+  function pickCity(name: string, lat?: number, lng?: number) {
+    setForm((f) => ({
+      ...f,
+      courierCity: name,
+      latitude: lat ?? f.latitude,
+      longitude: lng ?? f.longitude,
+    }));
+  }
 
   function showConfirmed(order: any) {
     const orderId = order?._id ?? "";
@@ -555,9 +567,9 @@ function Checkout() {
 
               {/* ── Contact info ── */}
               <div className="space-y-4">
-                <p className="eyebrow text-bone/40 text-xs">§ Contact</p>
+                <p className="eyebrow text-bone/40 text-xs">§ {t("co.contact")}</p>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Full name" required>
+                  <Field label={t("co.name")} required>
                     <input
                       value={form.name}
                       onChange={(e) => set("name")(e.target.value)}
@@ -565,21 +577,23 @@ function Checkout() {
                       className={inputCls}
                     />
                   </Field>
-                  <Field label="Phone number" required>
+                  <Field label={t("co.phone")} required>
                     <input
                       value={form.phone}
-                      onChange={(e) => set("phone")(e.target.value)}
+                      onChange={(e) => set("phone")(formatPhonePK(e.target.value))}
                       placeholder="03XX XXXXXXX"
                       type="tel"
+                      inputMode="tel"
                       className={inputCls}
                     />
                   </Field>
-                  <Field label="Phone number 2 (optional)">
+                  <Field label={t("co.phone2")}>
                     <input
                       value={form.phone2}
-                      onChange={(e) => set("phone2")(e.target.value)}
+                      onChange={(e) => set("phone2")(formatPhonePK(e.target.value))}
                       placeholder="03XX XXXXXXX"
                       type="tel"
+                      inputMode="tel"
                       className={inputCls}
                     />
                   </Field>
@@ -590,17 +604,17 @@ function Checkout() {
 
               {/* ── Delivery address ── */}
               <div className="space-y-4">
-                <p className="eyebrow text-bone/40 text-xs">§ Delivery address</p>
-                <Field label="Complete address" required>
+                <p className="eyebrow text-bone/40 text-xs">§ {t("co.address")}</p>
+                <Field label={t("co.addressFull")} required>
                   <textarea
                     value={form.address}
                     onChange={(e) => set("address")(e.target.value)}
-                    placeholder="Society name, house/flat no., street, area"
+                    placeholder={t("co.addressPh")}
                     rows={3}
                     className="w-full px-4 py-3 bg-bone/5 border border-bone/20 text-bone outline-none focus:border-brass text-sm transition placeholder:text-bone/30 resize-none"
                   />
                 </Field>
-                <Field label="Courier city" required>
+                <Field label={t("co.city")} required>
                   <AddressAutocomplete
                     value={form.courierCity}
                     onChange={(v: string) => set("courierCity")(v)}
@@ -610,12 +624,32 @@ function Checkout() {
                         setForm((f) => ({ ...f, latitude: item.lat, longitude: item.lng }));
                       }
                     }}
-                    placeholder="e.g. Karachi"
+                    placeholder={t("co.cityPh")}
                     required
                     dark
                     className={inputCls}
                   />
                 </Field>
+                {/* Popular cities quick-pick */}
+                <div className="space-y-2">
+                  <p className="eyebrow text-bone/40 text-[10px]">{t("co.popular")}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {POPULAR_CITIES.map((c) => (
+                      <button
+                        key={c.name}
+                        type="button"
+                        onClick={() => pickCity(c.name, c.lat, c.lng)}
+                        className={`px-3 py-1.5 text-xs border transition ${
+                          form.courierCity === c.name
+                            ? "border-brass bg-brass/15 text-bone"
+                            : "border-bone/20 text-bone/60 hover:border-bone/50 hover:text-bone"
+                        }`}
+                      >
+                        {c.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div className="h-px bg-bone/10" />
@@ -634,7 +668,7 @@ function Checkout() {
             <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-8">
               {/* Items */}
               <div className="border border-bone/15 p-6 space-y-4">
-                <p className="eyebrow text-bone/40 text-xs">§ Your order</p>
+                <p className="eyebrow text-bone/40 text-xs">§ {t("co.summary")}</p>
                 <ul className="space-y-3">
                   {items.map((i) => (
                     <li key={i.slug} className="flex gap-3 items-start">
@@ -687,8 +721,8 @@ function Checkout() {
                   <span className="eyebrow text-[10px] text-bone/60">COD</span>
                 </div>
                 <div>
-                  <p className="text-sm font-medium">Cash on Delivery</p>
-                  <p className="text-xs text-bone/50">Pay the courier when your order arrives</p>
+                  <p className="text-sm font-medium">{t("co.codTitle")}</p>
+                  <p className="text-xs text-bone/50">{t("co.codBody")}</p>
                 </div>
               </div>
 
@@ -703,12 +737,10 @@ function Checkout() {
                 ) : (
                   <Check className="size-5" strokeWidth={2} />
                 )}
-                {busy ? "Placing order…" : "Place order — COD"}
+                {busy ? t("co.placing") : t("co.placeOrder")}
               </button>
               <p className="text-xs text-bone/40 text-center leading-relaxed">
-                Confirmation link sent to{" "}
-                <span className="text-bone/60">{selectedEmail || "your email"}</span>.
-                Must confirm within 24 hours.
+                {t("co.confirmHint", { email: selectedEmail || t("co.youremail") })}
               </p>
             </div>
           </div>

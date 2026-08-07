@@ -11,11 +11,12 @@ import {
   voteHelpful,
 } from "@/lib/reviews.functions";
 import { useAuth } from "@/lib/auth-store";
+import { Skeleton, TextSkeleton } from "@/components/ui/skeleton";
 
 export function ReviewsSection({ productId, fallbackRating, fallbackCount }: { productId: string; fallbackRating?: number; fallbackCount?: number }) {
   const qc = useQueryClient();
   const { user } = useAuth();
-  const { data } = useQuery({ queryKey: ["reviews", productId], queryFn: () => listProductReviews(productId) });
+  const { data, isLoading } = useQuery({ queryKey: ["reviews", productId], queryFn: () => listProductReviews(productId) });
   const [showForm, setShowForm] = useState(false);
   const [rating, setRating] = useState(5);
   const [title, setTitle] = useState("");
@@ -100,7 +101,19 @@ export function ReviewsSection({ productId, fallbackRating, fallbackCount }: { p
               </form>
             )}
 
-            {reviews.length === 0 ? (
+            {isLoading ? (
+              <ul className="divide-y divide-coal/10" aria-hidden>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <li key={i} className="py-5 space-y-2.5">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="w-24 h-4" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
+                    <TextSkeleton lines={2} />
+                  </li>
+                ))}
+              </ul>
+            ) : reviews.length === 0 ? (
               <p className="text-sm text-coal/60 py-10 border border-dashed border-coal/15 text-center">No reviews yet — be the first.</p>
             ) : (
               <ul className="divide-y divide-coal/10">
@@ -149,7 +162,7 @@ export function ReviewsSection({ productId, fallbackRating, fallbackCount }: { p
 export function QASection({ productId }: { productId: string }) {
   const qc = useQueryClient();
   const { user } = useAuth();
-  const { data } = useQuery({ queryKey: ["qa", productId], queryFn: () => listProductQA(productId) });
+  const { data, isLoading } = useQuery({ queryKey: ["qa", productId], queryFn: () => listProductQA(productId) });
   const questions = data?.questions ?? [];
   const [ask, setAsk] = useState("");
   const [answering, setAnswering] = useState<string | null>(null);
@@ -186,7 +199,19 @@ export function QASection({ productId }: { productId: string }) {
           </div>
 
           <div>
-            {questions.length === 0 ? (
+            {isLoading ? (
+              <ul className="space-y-5" aria-hidden>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <li key={i} className="border border-coal/10 p-5 bg-bone space-y-2.5">
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="size-4 rounded-full" />
+                      <Skeleton className="h-3.5 w-1/3" />
+                    </div>
+                    <TextSkeleton lines={2} />
+                  </li>
+                ))}
+              </ul>
+            ) : questions.length === 0 ? (
               <p className="text-sm text-coal/60 py-10 border border-dashed border-coal/15 text-center bg-bone">No questions yet.</p>
             ) : (
               <ul className="space-y-5">

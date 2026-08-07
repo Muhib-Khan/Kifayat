@@ -9,11 +9,31 @@ export default defineConfig({
     TanStackRouterVite({
       routesDirectory: "./src/routes",
       generatedRouteTree: "./src/routeTree.gen.ts",
+      autoCodeSplitting: true,
     }),
     react(),
     tailwindcss(),
     tsconfigPaths(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return undefined;
+          if (id.includes("recharts") || id.includes("d3-")) return "charts";
+          if (id.includes("leaflet")) return "maps";
+          if (id.includes("firebase") || id.includes("@firebase")) return "auth-firebase";
+          if (id.includes("framer-motion")) return "motion";
+          if (id.includes("react-dom") || id.includes("react/") || id.includes("scheduler")) return "react";
+          if (id.includes("@tanstack")) return "tanstack";
+          if (id.includes("@radix-ui") || id.includes("cmdk")) return "ui-primitives";
+          if (id.includes("socket.io") || id.includes("engine.io")) return "realtime";
+          if (id.includes("lucide-react")) return "icons";
+          return "vendor";
+        },
+      },
+    },
+  },
   server: {
     host: "0.0.0.0",
     port: 5000,

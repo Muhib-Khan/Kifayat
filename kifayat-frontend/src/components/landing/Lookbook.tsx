@@ -102,7 +102,7 @@ export function Lookbook() {
                 className={`${colSpan} ${offset}`}
               >
                 {slug ? (
-                  <Link to="/products/$productId" params={{ productId: slug }} className="group block" data-cursor="view">
+                  <Link to="/products/$productId" params={{ productId: slug }} className="group block">
                     {inner}
                   </Link>
                 ) : (

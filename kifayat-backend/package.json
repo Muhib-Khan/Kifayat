@@ -15,7 +15,6 @@
     "node": "20.x"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.108.2",
     "@wppconnect-team/wppconnect": "^2.2.1",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.10.0",

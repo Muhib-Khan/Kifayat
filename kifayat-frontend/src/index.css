@@ -242,14 +242,6 @@
   100% { background-position: -200% 0; }
 }
 
-/* Custom blend cursor — hide default on hover-capable devices */
-@media (hover: hover) and (pointer: fine) {
-  body.has-blend-cursor,
-  body.has-blend-cursor * {
-    cursor: none !important;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
   .animate-fade-up,

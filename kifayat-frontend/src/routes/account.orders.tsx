@@ -4,6 +4,7 @@ import { listMyOrders } from "@/lib/shop.functions";
 import { useAuth } from "@/lib/auth-store";
 import { Package } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { fmtDatePK, fmtTimePK } from "@/lib/format";
 
 export const Route = createFileRoute("/account/orders")({
   component: Orders,
@@ -98,7 +99,7 @@ function Orders() {
               </span>
             </div>
             <div className="text-xs text-muted-foreground mt-0.5">
-              {o.created_at ? new Date(o.created_at).toLocaleDateString() : "—"} ·{" "}
+              {o.created_at ? `${fmtDatePK(o.created_at)} · ${fmtTimePK(o.created_at)}` : "—"} ·{" "}
               {o.city || "—"}
             </div>
           </div>

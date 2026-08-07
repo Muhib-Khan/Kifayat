@@ -28,15 +28,6 @@ import {
 } from "lucide-react";
 import { StatusBadge } from "./admin.index";
 import { PanelTableSkeleton } from "@/components/ui/skeleton";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-
-import iconUrl from "leaflet/dist/images/marker-icon.png";
-import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
-import shadowUrl from "leaflet/dist/images/marker-shadow.png";
-
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({ iconUrl, iconRetinaUrl, shadowUrl });
 
 export const Route = createFileRoute("/_authenticated/admin/orders")({
   component: AdminOrders,
@@ -57,15 +48,34 @@ const fmtDate = (v: string) =>
 
 function LocationMap({ lat, lng }: { lat: number | null; lng: number | null }) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInst = useRef<L.Map | null>(null);
+  const mapInst = useRef<any>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!mapRef.current || !lat || !lng || mapInst.current) return;
-    const map = L.map(mapRef.current, { zoomControl: false, attributionControl: false }).setView([lat, lng], 15);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
-    L.marker([lat, lng]).addTo(map);
-    mapInst.current = map;
-    return () => { map.remove(); mapInst.current = null; };
+
+    import("leaflet").then(async ({ default: L }) => {
+      await import("leaflet/dist/leaflet.css");
+      if (cancelled || !mapRef.current || !lat || !lng) return;
+
+      const iconUrl = (await import("leaflet/dist/images/marker-icon.png")).default as string;
+      const iconRetinaUrl = (await import("leaflet/dist/images/marker-icon-2x.png")).default as string;
+      const shadowUrl = (await import("leaflet/dist/images/marker-shadow.png")).default as string;
+
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({ iconUrl, iconRetinaUrl, shadowUrl });
+
+      const map = L.map(mapRef.current, { zoomControl: false, attributionControl: false }).setView([lat, lng], 15);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
+      L.marker([lat, lng]).addTo(map);
+      mapInst.current = map;
+    });
+
+    return () => {
+      cancelled = true;
+      if (mapInst.current) { mapInst.current.remove(); mapInst.current = null; }
+    };
   }, [lat, lng]);
 
   if (!lat || !lng) return null;

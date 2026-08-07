@@ -6,6 +6,7 @@ import { isWishlisted, toggleWishlist } from "@/lib/account.functions";
 import { useAuth } from "@/lib/auth-store";
 import { resolveImage } from "@/lib/product-image-map";
 import { toast } from "sonner";
+import { useT } from "@/lib/i18n";
 
 const WHY_KIFAYAT = [
   { icon: Banknote, title: "Cash on Delivery", text: "Pay when your order lands on your doorstep — no card, no risk." },
@@ -55,6 +56,7 @@ function WishlistHeart({ productId, slug }: { productId: string; slug: string })
 const FEATURED_LIMIT = 80;
 
 export function Products() {
+  const t = useT();
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["products", "featured-landing"],
     queryFn: () => listFeaturedLandingProducts(FEATURED_LIMIT),
@@ -125,7 +127,7 @@ export function Products() {
                 key={p.id}
                 className="group"
               >
-                <Link to="/products/$productId" params={{ productId: p.slug }} className="block" data-cursor="view">
+                <Link to="/products/$productId" params={{ productId: p.slug }} className="block">
                   <div className="relative aspect-[3/4] bg-bone overflow-hidden rounded-xl mb-3 lg:mb-4 img-bone-grade">
                     <img
                       src={resolveImage(p.image_url, p.slug)}
@@ -139,7 +141,7 @@ export function Products() {
                     {/* Sold out */}
                     {p.inStock === false && (
                       <div className="absolute inset-0 grid place-items-center">
-                        <span className="eyebrow bg-coal text-bone px-3 py-1.5">Out of stock</span>
+                        <span className="eyebrow bg-coal text-bone px-3 py-1.5">{t("btn.outOfStock")}</span>
                       </div>
                     )}
 

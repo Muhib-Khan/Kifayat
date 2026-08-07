@@ -16,6 +16,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getProductById, getSimilarProducts } from "@/lib/shop.functions";
 import { recordRecentlyViewed, toggleWishlist, isWishlisted } from "@/lib/account.functions";
 import { useAuth } from "@/lib/auth-store";
+import { useT } from "@/lib/i18n";
 import { ReviewsSection } from "@/components/shop/ReviewsAndQA";
 import { SEO, SITE_URL } from "@/components/seo/SEO";
 import { ProductSchema, BreadcrumbSchema } from "@/components/seo/JsonLd";
@@ -190,6 +191,7 @@ function StarRow({ rating, count, onClick }: { rating: number; count: number; on
 
 function ProductPage() {
   const { product } = Route.useLoaderData();
+  const t = useT();
   const [qty, setQty] = useState(1);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [activeImg, setActiveImg] = useState(0);
@@ -885,7 +887,7 @@ function ProductPage() {
                   disabled={!effInStock}
                   className="w-full inline-flex items-center justify-between bg-coal text-bone eyebrow px-5 py-3.5 hover:bg-brass hover:text-coal transition-all duration-300 disabled:opacity-50 text-xs"
                 >
-                  <span>{effInStock ? "Add to bag" : "Out of stock"}</span>
+                  <span>{effInStock ? t("btn.addToBag") : t("btn.outOfStock")}</span>
                   <ArrowUpRight className="size-3.5" strokeWidth={1.5} />
                 </button>
                 <button

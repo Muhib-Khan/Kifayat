@@ -9,6 +9,7 @@ import { useCart, cart, cartTotals, refreshCartPrices, validateCartStock, FLAT_D
 import type { CartItem, StockWarning } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-store";
 import { unapplyVoucherFromProduct } from "@/lib/voucher.functions";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({ meta: [{ title: "The Bag — Kifayat" }, { name: "description", content: "Your considered selection from Kifayat — Pakistan's editorial marketplace." }] }),
@@ -18,6 +19,7 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const items = useCart();
   const { user } = useAuth();
+  const t = useT();
   const [deliveryFee, setDeliveryFee] = useState<number>(FLAT_DELIVERY_FEE);
   const { subtotal, shipping, total, count } = cartTotals(items, deliveryFee);
   const [stockWarnings, setStockWarnings] = useState<StockWarning[]>([]);
@@ -129,7 +131,7 @@ function CartPage() {
                         </div>
                         {unavailableIds.has(item.product_id ?? item.slug) && (
                           <p className="flex items-center gap-1 text-xs text-red-600 font-medium">
-                            <AlertTriangle className="size-3" strokeWidth={2} /> Out of stock
+                            <AlertTriangle className="size-3" strokeWidth={2} /> {t("cart.outOfStock")}
                           </p>
                         )}
                         <div className="flex items-center justify-between">
@@ -184,7 +186,7 @@ function CartPage() {
                         )}
                         {unavailableIds.has(item.product_id ?? item.slug) && (
                           <p className="flex items-center gap-1 text-xs text-red-600 font-medium mt-1">
-                            <AlertTriangle className="size-3" strokeWidth={2} /> Out of stock
+                            <AlertTriangle className="size-3" strokeWidth={2} /> {t("cart.outOfStock")}
                           </p>
                         )}
                       </div>
@@ -210,14 +212,14 @@ function CartPage() {
             {/* ── Order summary ── */}
             <aside className="lg:sticky lg:top-28 h-fit">
               <div className="border border-coal/15 p-6 sm:p-8 lg:p-10 bg-paper">
-                <div className="eyebrow text-muted-foreground mb-6">§ Summary</div>
+                <div className="eyebrow text-muted-foreground mb-6">§ {t("cart.title")}</div>
                 <dl className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <dt className="eyebrow text-muted-foreground">Subtotal</dt>
+                    <dt className="eyebrow text-muted-foreground">{t("cart.subtotal")}</dt>
                     <dd className="font-mono">Rs {subtotal.toLocaleString()}</dd>
                   </div>
                   <div className="flex justify-between">
-                    <dt className="eyebrow text-muted-foreground">Shipping</dt>
+                    <dt className="eyebrow text-muted-foreground">{t("cart.shipping")}</dt>
                     <dd className="font-mono">Rs {shipping}</dd>
                   </div>
                 </dl>
@@ -228,7 +230,7 @@ function CartPage() {
                 </div>
                 {hasStockIssues && !validating ? (
                   <span className="group mt-8 w-full inline-flex items-center justify-between gap-3 bg-coal/40 text-bone/40 eyebrow px-6 py-4 cursor-not-allowed">
-                    Proceed to checkout
+                    {t("cart.checkout")}
                     <ArrowUpRight className="size-4" strokeWidth={1.5} />
                   </span>
                 ) : (
@@ -236,22 +238,22 @@ function CartPage() {
                     to="/checkout"
                     className="group mt-8 w-full inline-flex items-center justify-between gap-3 bg-coal text-bone eyebrow px-6 py-4 hover:bg-brass hover:text-coal transition"
                   >
-                    Proceed to checkout
+                    {t("cart.checkout")}
                     <ArrowUpRight className="size-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" strokeWidth={1.5} />
                   </Link>
                 )}
                 {hasStockIssues && !validating && (
                   <div className="mt-4 p-3 bg-red-50 border border-red-200 text-red-700 text-xs space-y-1">
                     <p className="font-medium flex items-center gap-1.5">
-                      <AlertTriangle className="size-3.5" strokeWidth={2} /> Stock issues
+                      <AlertTriangle className="size-3.5" strokeWidth={2} /> {t("cart.stockIssues")}
                     </p>
-                    <p>Some items in your bag are out of stock. Remove them to proceed.</p>
+                    <p>{t("cart.stockIssuesHint")}</p>
                   </div>
                 )}
                 <div className="mt-8 pt-6 border-t border-coal/15 space-y-3">
-                  <Reassure Icon={Truck} text="Dispatched Pakistan-wide" />
-                  <Reassure Icon={ShieldCheck} text="Cash on Delivery accepted" />
-                  <Reassure Icon={Lock} text="Encrypted data" />
+                  <Reassure Icon={Truck} text={t("trust.delivery")} />
+                  <Reassure Icon={ShieldCheck} text={t("cart.codAccepted")} />
+                  <Reassure Icon={Lock} text={t("cart.encrypted")} />
                 </div>
               </div>
             </aside>
@@ -272,13 +274,14 @@ function Reassure({ Icon, text }: { Icon: typeof Lock; text: string }) {
 }
 
 function EmptyCart() {
+  const t = useT();
   return (
     <section className="max-w-3xl mx-auto px-5 py-24 text-center">
       <ShoppingBag className="size-12 mx-auto text-coal/30 mb-6" strokeWidth={1.2} />
-      <h2 className="font-display italic text-4xl lg:text-6xl">Your bag is empty<span className="text-brass">.</span></h2>
-      <p className="text-muted-foreground mt-4 max-w-md mx-auto">Browse the edit and pick a few objects to consider.</p>
+      <h2 className="font-display italic text-4xl lg:text-6xl">{t("cart.empty")}<span className="text-brass">.</span></h2>
+      <p className="text-muted-foreground mt-4 max-w-md mx-auto">{t("products.browseHint")}</p>
       <Link to="/products" className="inline-flex items-center gap-2 mt-10 bg-coal text-bone eyebrow px-6 py-4 hover:bg-brass hover:text-coal transition">
-        Browse the edit <ArrowUpRight className="size-4" strokeWidth={1.5} />
+        {t("cart.emptyCta")} <ArrowUpRight className="size-4" strokeWidth={1.5} />
       </Link>
     </section>
   );

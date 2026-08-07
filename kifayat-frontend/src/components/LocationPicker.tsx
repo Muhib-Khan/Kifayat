@@ -1,14 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import { MapPin, Crosshair, Loader2 } from "lucide-react";
-
-import iconUrl from "leaflet/dist/images/marker-icon.png";
-import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
-import shadowUrl from "leaflet/dist/images/marker-shadow.png";
-
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({ iconUrl, iconRetinaUrl, shadowUrl });
 
 interface LocationPickerProps {
   latitude: number | null;
@@ -18,8 +9,8 @@ interface LocationPickerProps {
 
 export default function LocationPicker({ latitude, longitude, onChange }: LocationPickerProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstance = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
+  const mapInstance = useRef<any>(null);
+  const markerRef = useRef<any>(null);
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState("");
 
@@ -28,33 +19,49 @@ export default function LocationPicker({ latitude, longitude, onChange }: Locati
   const zoom = latitude && longitude ? 15 : 5;
 
   useEffect(() => {
-    if (!mapRef.current || mapInstance.current) return;
+    let cancelled = false;
 
-    const map = L.map(mapRef.current, { zoomControl: false }).setView(center, zoom);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>",
-      maxZoom: 19,
-    }).addTo(map);
-    mapInstance.current = map;
+    import("leaflet").then(async ({ default: L }) => {
+      await import("leaflet/dist/leaflet.css");
+      if (cancelled || !mapRef.current || mapInstance.current) return;
 
-    const marker = L.marker(center, { draggable: true }).addTo(map);
-    markerRef.current = marker;
+      const iconUrl = (await import("leaflet/dist/images/marker-icon.png")).default as string;
+      const iconRetinaUrl = (await import("leaflet/dist/images/marker-icon-2x.png")).default as string;
+      const shadowUrl = (await import("leaflet/dist/images/marker-shadow.png")).default as string;
 
-    marker.on("dragend", () => {
-      const pos = marker.getLatLng();
-      onChange(pos.lat, pos.lng);
-    });
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({ iconUrl, iconRetinaUrl, shadowUrl });
 
-    map.on("click", (e: L.LeafletMouseEvent) => {
-      marker.setLatLng(e.latlng);
-      onChange(e.latlng.lat, e.latlng.lng);
+      const map = L.map(mapRef.current, { zoomControl: false }).setView(center, zoom);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>",
+        maxZoom: 19,
+      }).addTo(map);
+      mapInstance.current = map;
+
+      const marker = L.marker(center, { draggable: true }).addTo(map);
+      markerRef.current = marker;
+
+      marker.on("dragend", () => {
+        const pos = marker.getLatLng();
+        onChange(pos.lat, pos.lng);
+      });
+
+      map.on("click", (e: any) => {
+        marker.setLatLng(e.latlng);
+        onChange(e.latlng.lat, e.latlng.lng);
+      });
     });
 
     return () => {
-      map.remove();
-      mapInstance.current = null;
-      markerRef.current = null;
+      cancelled = true;
+      if (mapInstance.current) {
+        mapInstance.current.remove();
+        mapInstance.current = null;
+        markerRef.current = null;
+      }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
